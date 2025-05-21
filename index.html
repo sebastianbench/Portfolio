@@ -232,6 +232,59 @@
   border-radius: 10px;         /* rounded corners */
 }
 
+/* Make your container truly fluid */
+.container {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Content-section: stack to one column under 768px */
+@media (max-width: 768px) {
+  .content-section {
+    flex-direction: column;
+  }
+}
+
+/* Hero text: scale down slightly on mobile */
+@media (max-width: 480px) {
+  .hero p {
+    font-size: 28px;
+  }
+}
+
+/* Gallery: use auto-fitting grid instead of hard 3 columns */
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 10px;
+  max-width: 1200px;  /* matches your container */
+  margin: 20px auto;
+  padding: 10px;
+  border: 2px solid #fff;
+  border-radius: 10px;
+}
+
+/* Ensure gallery images always fill their cells */
+.gallery img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 10px;
+}
+
+/* Gallery captions stay inside each cell */
+.gallery-item {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Caption text */
+.gallery-caption {
+  padding: 0.5rem 0;
+}
+
     
   </style>
 </head>
