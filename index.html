@@ -226,33 +226,43 @@
   border-radius: 20px;
 }
 
-/* ——— Unified gallery styling ——— */
+/* ——— Final, authoritative gallery styling ——— */
 .gallery {
-  display: grid !important;
-  grid-template-columns: repeat(3, 1fr) !important;  /* 3 columns on desktop */
-  gap: 10px !important;
-  max-width: 1200px !important;   /* wider than the 800px container above */
-  width: 100% !important;         /* never exceed viewport */
-  margin: 20px auto !important;   /* centered, with vertical breathing room */
-  padding: 0 1rem !important;     /* match the side gutters of your container */
-  box-sizing: border-box !important;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 columns on desktop */
+  gap: 10px;                             /* space between items */
+  
+  /* make it wider than the .container above */
+  max-width: 1200px;
+  width: 100%;
+  margin: 20px auto;                     /* center with vertical spacing */
+  padding: 0 1rem;                       /* same side gutters as above */
+  
+  box-sizing: border-box;                /* include padding in width */
+}
+
+.gallery-item {
+  display: flex;
+  flex-direction: column;
 }
 
 .gallery img {
-  width: 100% !important;
-  height: auto !important;
-  display: block !important;
-  border-radius: 10px !important;
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  display: block;
 }
 
-/* ——— Single column on mobile ——— */
+/* ——— Collapse to one column on small screens ——— */
 @media (max-width: 768px) {
   .gallery {
-    grid-template-columns: 1fr !important;  /* stack */
-    padding: 0 0.5rem !important;           /* match your mobile gutters */
-    margin: 20px 0 !important;              /* vertical spacing only */
+    grid-template-columns: 1fr !important;  /* force single column */
+    max-width: none !important;             /* drop the 1200px cap */
+    padding: 0 0.5rem !important;           /* match mobile gutter */
+    margin: 20px 0 !important;              /* only vertical spacing */
   }
 }
+
 
 
 
