@@ -226,30 +226,31 @@
   border-radius: 20px;
 }
 
-/* ——— Gallery: 3 columns on desktop, 1 on mobile ——— */
+/* ——— Unified gallery styling ——— */
 .gallery {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 3 equal cols */
-  gap: 10px;                             /* space between images */
-  max-width: 1200px;                     /* wider than your 800px container */
-  width: 100%;                           /* but never wider than viewport */
-  margin: 20px auto;                     /* center with some vertical space */
-  padding: 0 1rem;                       /* same 1rem gutters as the container above */
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;  /* 3 columns on desktop */
+  gap: 10px !important;
+  max-width: 1200px !important;   /* wider than the 800px container above */
+  width: 100% !important;         /* never exceed viewport */
+  margin: 20px auto !important;   /* centered, with vertical breathing room */
+  padding: 0 1rem !important;     /* match the side gutters of your container */
+  box-sizing: border-box !important;
 }
 
 .gallery img {
-  width: 100%;
-  height: auto;
-  display: block;
-  border-radius: 10px;
+  width: 100% !important;
+  height: auto !important;
+  display: block !important;
+  border-radius: 10px !important;
 }
 
-/* Collapse to one column on narrow screens, keep 0.5rem gutters */
+/* ——— Single column on mobile ——— */
 @media (max-width: 768px) {
   .gallery {
-    grid-template-columns: 1fr;
-    padding: 0 0.5rem;  /* match your container’s mobile gutters */
-    margin: 20px 0;     /* vertical spacing only */
+    grid-template-columns: 1fr !important;  /* stack */
+    padding: 0 0.5rem !important;           /* match your mobile gutters */
+    margin: 20px 0 !important;              /* vertical spacing only */
   }
 }
 
