@@ -232,7 +232,7 @@
   border-radius: 10px;         /* rounded corners */
 }
 
-/* Make your container truly fluid */
+/* Make the container fluid up to 1200px */
 .container {
   max-width: 1200px;
   width: 100%;
@@ -240,47 +240,64 @@
   padding: 0 1rem;
 }
 
-/* Content-section: stack to one column under 768px */
+/* Responsive two-column content */
+.content-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.content-section > div {
+  /* Two columns side by side on desktop */
+  flex: 1 1 calc(50% - 2rem);
+}
+
+/* Stack to one column under 768px */
 @media (max-width: 768px) {
-  .content-section {
-    flex-direction: column;
+  .content-section > div {
+    flex: 1 1 100%;
   }
 }
 
-/* Hero text: scale down slightly on mobile */
+/* Hero text scales on narrower screens */
 @media (max-width: 480px) {
   .hero p {
     font-size: 28px;
   }
 }
 
-/* Gallery: use auto-fitting grid instead of hard 3 columns */
+/* Fluid right-column image, no overflow */
+.right-column img {
+  width: 100%;
+  max-width: 600px;  /* caps it if you still want a max on desktop */
+  border-radius: 20px;
+}
+
+/* Gallery grid: auto-fit columns */
 .gallery {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 10px;
   max-width: 1200px;  /* matches your container */
+  width: 100%;
   margin: 20px auto;
   padding: 10px;
-  border: 0px solid #fff;
+  border: 2px solid #fff;
   border-radius: 10px;
 }
 
-/* Ensure gallery images always fill their cells */
-.gallery img {
-  width: 100%;
-  height: auto;
-  display: block;
-  border-radius: 10px;
+/* One-column gallery under 400px for extra small phones */
+@media (max-width: 400px) {
+  .gallery {
+    grid-template-columns: 1fr;
+  }
 }
 
-/* Gallery captions stay inside each cell */
 .gallery-item {
   display: flex;
   flex-direction: column;
 }
 
-/* Caption text */
 .gallery-caption {
   padding: 0.5rem 0;
 }
