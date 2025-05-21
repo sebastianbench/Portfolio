@@ -23,13 +23,6 @@
   padding: 0 1rem;
 }
 
-/* 3) Tighter gutters on mobile */
-@media (max-width: 768px) {
-  .container {
-    padding: 0 0.5rem;  /* less side-padding */
-  }
-}
-
     
     /* Ensure your bold spans actually use the 700‐weight font */
 .bold {
@@ -267,19 +260,7 @@
   flex: 1 1 calc(50% - 2rem);
 }
 
-/* Stack to one column under 768px */
-@media (max-width: 768px) {
-  .content-section > div {
-    flex: 1 1 100%;
-  }
-}
 
-/* Hero text scales on narrower screens */
-@media (max-width: 480px) {
-  .hero p {
-    font-size: 28px;
-  }
-}
 
 /* Fluid right-column image, no overflow */
 .right-column img {
@@ -301,12 +282,6 @@
   border-radius: 10px;
 }
 
-/* One-column gallery under 400px for extra small phones */
-@media (max-width: 400px) {
-  .gallery {
-    grid-template-columns: 1fr;
-  }
-}
 
 .gallery-item {
   display: flex;
@@ -317,23 +292,7 @@
   padding: 0.5rem 0;
 }
 
-    @media (max-width: 768px) {
-  .content-section {
-    flex-direction: column;
-  }
-
-  .content-section .right-column {
-    order: -1;
-    /* add vertical gutters */
-    margin: 1.5rem 0;   /* 1.5rem above and below the phone image */
-  }
-
-  /* tighten up the gap before your RBM logo underneath */
-  .content-section .left-column img {
-    margin-top: 0;     /* remove any extra top-margin you’d added */
-    margin-bottom: 1rem; /* keep a bit of space before the list below */
-  }
-}
+   
 
 
 /* Force all text to white */
@@ -341,7 +300,30 @@ body {
   color: #fff !important;
 }
 
-   @media (max-width: 768px) {
+  @media (max-width: 768px) {
+  /* 1) Expand the hero’s padding so it breathes */
+  .hero {
+    padding: 2rem 0;    /* 2rem on top and bottom */
+  }
+
+  /* 2) Stack content, phone first, with custom gutters */
+  .content-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0;            /* we’ll use margins instead */
+  }
+
+  .content-section .right-column {
+    order: -1;
+    margin: 2.5rem 0 0.75rem;  /* 2.5rem above, 0.75rem below */
+  }
+
+  .content-section .left-column img {
+    margin-top: 0;        /* flush under the phone image */
+    margin-bottom: 1rem;  /* 1rem before the text below */
+  }
+
+  /* 3) Un-cap and pad the container */
   .container {
     max-width: none;
     width: 100%;
@@ -349,7 +331,7 @@ body {
     margin: 0;
   }
 
-  /* Add these lines: make nav, hero, and content full-width too */
+  /* 4) Ensure nav and hero also fill edge-to-edge */
   .nav,
   .hero,
   .content-section {
@@ -358,6 +340,7 @@ body {
     margin: 0 auto;
   }
 }
+
 
 
     
