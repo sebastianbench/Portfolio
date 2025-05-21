@@ -1,3 +1,4 @@
+/* 1) Regular (400) */
 @font-face {
   font-family: 'Manrope';
   src: url('../fonts/Manrope-Regular.ttf') format('truetype');
@@ -5,6 +6,7 @@
   font-style: normal;
 }
 
+/* 2) ExtraLight (200) */
 @font-face {
   font-family: 'Manrope';
   src: url('../fonts/Manrope-ExtraLight.ttf') format('truetype');
@@ -12,6 +14,7 @@
   font-style: normal;
 }
 
+/* 3) Bold (700) */
 @font-face {
   font-family: 'Manrope';
   src: url('../fonts/Manrope-Bold.ttf') format('truetype');
@@ -19,10 +22,12 @@
   font-style: normal;
 }
 
-/* Extra-light utility class */
+/* Utility class */
 .extralight {
   font-family: 'Manrope', sans-serif;
   font-weight: 200;
+}
+
 }
 
 /* Base styles */
