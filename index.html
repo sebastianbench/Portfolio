@@ -6,6 +6,29 @@
   <title>Sebastian Echavarria</title>
   <style>
 
+    /* 1) Make every element use border-box so borders don't add to width */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* 2) (Re-)define your container with a border */
+.container {
+  border: 2px solid #fff;
+  border-radius: 10px;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* 3) Tighter gutters on mobile */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 0.5rem;  /* less side-padding */
+  }
+}
+
+
 .container {
   max-width: 1200px;
   margin: 0 auto;
