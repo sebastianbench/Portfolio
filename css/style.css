@@ -7,11 +7,23 @@
 
 @font-face {
   font-family: 'Manrope';
+  src: url('../fonts/Manrope-ExtraLight.ttf') format('truetype');
+  font-weight: 200;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Manrope';
   src: url('../fonts/Manrope-Bold.ttf') format('truetype');
   font-weight: 700;
   font-style: normal;
 }
 
+/* Extra-light utility class */
+.extralight {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 200;
+}
 
 /* Base styles */
 body {
@@ -20,6 +32,9 @@ body {
   background-color: #111;
   color: #fff;
 }
+
+/* …the rest of your CSS… */
+
 
 /* Nav styles */
 .nav {
