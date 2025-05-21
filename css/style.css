@@ -1,9 +1,8 @@
 /* ExtraLight (200) */
 @font-face {
   font-family: 'Manrope';
-  src: url('../fonts/Manrope-ExtraLight.woff2') format('woff2'),
-       url('../fonts/Manrope-ExtraLight.woff')  format('woff'),
-       url('../fonts/Manrope-ExtraLight.ttf')   format('truetype');
+  src: url('../fonts/Manrope-ExtraLight.woff') format('woff'),
+       url('../fonts/Manrope-ExtraLight.ttf')  format('truetype');
   font-weight: 200;
   font-style: normal;
   font-display: swap;
@@ -12,9 +11,8 @@
 /* Regular (400) */
 @font-face {
   font-family: 'Manrope';
-  src: url('../fonts/Manrope-Regular.woff2') format('woff2'),
-       url('../fonts/Manrope-Regular.woff')  format('woff'),
-       url('../fonts/Manrope-Regular.ttf')   format('truetype');
+  src: url('../fonts/Manrope-Regular.woff') format('woff'),
+       url('../fonts/Manrope-Regular.ttf')  format('truetype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -23,9 +21,8 @@
 /* Bold (700) */
 @font-face {
   font-family: 'Manrope';
-  src: url('../fonts/Manrope-Bold.woff2') format('woff2'),
-       url('../fonts/Manrope-Bold.woff')  format('woff'),
-       url('../fonts/Manrope-Bold.ttf')   format('truetype');
+  src: url('../fonts/Manrope-Bold.woff') format('woff'),
+       url('../fonts/Manrope-Bold.ttf')  format('truetype');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -36,6 +33,7 @@
   font-family: 'Manrope', sans-serif;
   font-weight: 200;
 }
+
 
 /* Base styles */
 body {
