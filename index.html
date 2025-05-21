@@ -321,10 +321,20 @@
   .content-section {
     flex-direction: column;
   }
+
   .content-section .right-column {
     order: -1;
+    /* add vertical gutters */
+    margin: 1.5rem 0;   /* 1.5rem above and below the phone image */
+  }
+
+  /* tighten up the gap before your RBM logo underneath */
+  .content-section .left-column img {
+    margin-top: 0;     /* remove any extra top-margin you’d added */
+    margin-bottom: 1rem; /* keep a bit of space before the list below */
   }
 }
+
 
 /* Force all text to white */
 body {
