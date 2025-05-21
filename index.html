@@ -186,6 +186,23 @@
     .left-column p {
   margin: 0 0 1rem;
 }
+
+    /* Full-width 3-column gallery below the main container */
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  width: 100vw;
+  margin: 0;            /* no extra top/bottom margin */
+  padding: 0;           /* flush to the edges */
+  overflow-x: hidden;   /* prevent any accidental horizontal scroll */
+}
+
+.gallery img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
     
   </style>
 </head>
@@ -236,5 +253,12 @@
 </section>
     </div>
 
+<section class="gallery">
+  <img src="https://github.com/sebastianbench/Portfolio/blob/main/images/111udZrBBGrifhaOCPurprSRR7U5I.jpg?raw=true" alt="Gallery Image 1">
+  <img src="https://github.com/sebastianbench/Portfolio/blob/main/images/222udZrBBGrifhaOCPurprSRR7U5I.jpg?raw=true" alt="Gallery Image 2">
+  <img src="https://github.com/sebastianbench/Portfolio/blob/main/images/333udZrBBGrifhaOCPurprSRR7U5I.jpg?raw=true" alt="Gallery Image 3">
+</section>
+
+  
 </body>
 </html>
