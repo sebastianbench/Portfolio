@@ -342,7 +342,7 @@
   height: 400px;
   background-color: #0a0a0a;
   border-radius: 15px;
-  padding: 20px;
+  padding: 15px;  /* Restore some padding for proper spacing */
   box-sizing: border-box;
   position: relative;
   transition: transform 0.3s ease;
@@ -352,7 +352,7 @@
 /* Mobile adjustments for chart */
 @media (max-width: 768px) {
   .chart-container {
-    padding: 10px;  /* Much less padding on mobile for maximum chart space */
+    padding: 10px;  /* Minimal but some padding for mobile */
     margin: 0;      /* Remove any extra margins */
   }
 }
@@ -526,7 +526,7 @@
   .gallery {
     grid-template-columns: 1fr;
     max-width: 100%;
-    padding: 0 0.5rem;  /* Much less side padding on mobile */
+    padding: 0;  /* Remove all padding on mobile */
     margin: 50px auto 60px;  /* Generous vertical margins */
     gap: 50px;  /* Much more space between items */
   }
@@ -952,17 +952,17 @@ function drawChart() {
   const width = rect.width;
   const height = rect.height;
   
-  // Chart margins
-  const margin = { top: 60, right: 40, bottom: 60, left: 90 };  // Increased top margin for multi-line legend
+  // Chart margins - reduce right margin significantly
+  const margin = { top: 60, right: 5, bottom: 60, left: 80 };  
   const chartWidth = width - margin.left - margin.right;
   const chartHeight = height - margin.top - margin.bottom;
   
-  // Adjust margins for mobile
+  // Adjust margins for smaller screens
   if (width < 768) {
-    margin.top = 50;  // More space for potential multi-line legend
-    margin.right = 10;  // Much smaller right margin on mobile
-    margin.bottom = 40;  // Smaller bottom margin
-    margin.left = 50;   // Much smaller left margin on mobile
+    margin.top = 50;  
+    margin.right = 2;   // Very minimal right margin
+    margin.bottom = 40;  
+    margin.left = 50;   
   }
   
   // Clear canvas
