@@ -1043,7 +1043,7 @@ function drawChart() {
     const mouseX = e.clientX - rect.left;
     const mouseY = e.clientY - rect.top;
     
-    // Find closest data point
+    // Find closest data point with larger detection area
     let closestDistance = Infinity;
     let closestPoint = null;
     
@@ -1053,7 +1053,8 @@ function drawChart() {
         const y = margin.top + chartHeight - (value * scale);
         const distance = Math.sqrt((mouseX - x) ** 2 + (mouseY - y) ** 2);
         
-        if (distance < 20 && distance < closestDistance) {
+        // Increased detection radius from 20 to 40 pixels
+        if (distance < 40 && distance < closestDistance) {
           closestDistance = distance;
           const prevValue = i > 0 ? dataset.data[i-1] : dataset.data[i];
           const growthPercent = i > 0 ? (((value - prevValue) / prevValue) * 100).toFixed(1) : 0;
@@ -1072,6 +1073,7 @@ function drawChart() {
       });
     });
     
+    // Show tooltip if we found a point, keep it visible longer
     if (closestPoint) {
       tooltip.style.display = 'block';
       tooltip.style.left = (closestPoint.x + 15) + 'px';
@@ -1085,12 +1087,27 @@ function drawChart() {
         <div class="tooltip-growth">+${closestPoint.growth}% vs previous year</div>
         <div class="tooltip-year">${closestPoint.year}</div>
       `;
+      
+      // Clear any existing timeout
+      if (window.tooltipTimeout) {
+        clearTimeout(window.tooltipTimeout);
+      }
     } else {
-      tooltip.style.display = 'none';
+      // Add a small delay before hiding to prevent flickering
+      if (window.tooltipTimeout) {
+        clearTimeout(window.tooltipTimeout);
+      }
+      window.tooltipTimeout = setTimeout(() => {
+        tooltip.style.display = 'none';
+      }, 100);
     }
   });
   
+  // Only hide immediately when mouse leaves canvas completely
   canvas.addEventListener('mouseleave', () => {
+    if (window.tooltipTimeout) {
+      clearTimeout(window.tooltipTimeout);
+    }
     tooltip.style.display = 'none';
   });
 }
