@@ -812,6 +812,8 @@ body {
 <p><span class="bold">Creative</span> <span class="extralight">Director.</span></p>
     </div>
   </header>
+  
+  <!-- FIRST SECTION -->
   <section class="content-section">
     <div class="left-column slide-in-left">
       <img src="https://github.com/sebastianbench/Portfolio/blob/main/images/rbm_logov2.png?raw=true" alt="RBM Logo">
@@ -835,6 +837,7 @@ body {
 </section>
     </div>
 
+<!-- FIRST GALLERY -->
 <section class="gallery">
   <div class="gallery-item scale-in">
     <div class="chart-container">
@@ -874,6 +877,85 @@ body {
     <div class="chart-container">
       <canvas class="chart-canvas" id="pieChart"></canvas>
       <div class="chart-tooltip" id="pieTooltip"></div>
+    </div>
+    <div class="gallery-caption">
+      <p>
+        <span class="bold">Reliable Results.</span><br />
+      </p>
+      <ul>
+        <li>Consistent positive results</li>
+        <li>1000+ orders per year</li>
+        <li>Slowly increasing income</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- SECOND SECTION (DUPLICATED) -->
+<div class="container">
+  <section class="content-section">
+    <div class="left-column slide-in-left">
+      <img src="https://github.com/sebastianbench/Portfolio/blob/main/images/repareo_logo.png?raw=true" alt="Repareo Logo">
+       <p>
+      <span class="bold">Marketing Manager.</span><br>
+      <span class="extralight">
+        Red Bow Music.<br>
+        Bremen, Germany.
+      </span>
+    </p>
+    <ul>
+      <li>Founder of a company.</li>
+      <li>1000 orders in the first year.</li>
+      <li>9000+ orders since.</li>
+    </ul>
+  </div>
+  <div class="right-column slide-in-right">
+    <img src="https://github.com/sebastianbench/Portfolio/blob/main/images/Images 06.jpg?raw=true"
+         alt="Second Project Preview">
+  </div>
+</section>
+</div>
+
+<!-- SECOND GALLERY (DUPLICATED) -->
+<section class="gallery">
+  <div class="gallery-item scale-in">
+    <div class="chart-container">
+      <canvas class="chart-canvas" id="growthChart2"></canvas>
+      <div class="chart-tooltip" id="chartTooltip2"></div>
+    </div>
+    <div class="gallery-caption">
+      <p>
+        <span class="bold">Fast Growth.</span><br />
+      </p>
+      <ul>
+        <li>Grew by 100% in the 2nd year</li>
+        <li>Over 2 Mio. likes in the 5th year</li>
+        <li>Completely organic, no ads</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="gallery-item scale-in">
+    <div class="chart-container">
+      <canvas class="chart-canvas" id="revenueChart2"></canvas>
+      <div class="chart-tooltip" id="revenueTooltip2"></div>
+    </div>
+    <div class="gallery-caption">
+      <p>
+        <span class="bold">Reliable Results.</span><br />
+      </p>
+      <ul>
+        <li>Consistent positive results</li>
+        <li>1000+ orders per year</li>
+        <li>Slowly increasing income</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="gallery-item scale-in">
+    <div class="chart-container">
+      <canvas class="chart-canvas" id="pieChart2"></canvas>
+      <div class="chart-tooltip" id="pieTooltip2"></div>
     </div>
     <div class="gallery-caption">
       <p>
@@ -1139,12 +1221,12 @@ function drawRevenueChart(canvasId = 'revenueChart', tooltipId = 'revenueTooltip
 }
 
 // Pie Chart drawing function
-function drawPieChart() {
-  const canvas = document.getElementById('pieChart');
+function drawPieChart(canvasId = 'pieChart', tooltipId = 'pieTooltip') {
+  const canvas = document.getElementById(canvasId);
   if (!canvas) return;
   
   const ctx = canvas.getContext('2d');
-  const tooltip = document.getElementById('pieTooltip');
+  const tooltip = document.getElementById(tooltipId);
   
   // Set canvas size
   const rect = canvas.getBoundingClientRect();
@@ -1289,44 +1371,48 @@ segments.forEach((segment, i) => {
           <div class="tooltip-growth">Traffic Source</div>
         `;
         
-        if (window.pieTooltipTimeout) {
-          clearTimeout(window.pieTooltipTimeout);
+        const timeoutKey = `${canvasId}TooltipTimeout`;
+        if (window[timeoutKey]) {
+          clearTimeout(window[timeoutKey]);
         }
       } else {
-        if (window.pieTooltipTimeout) {
-          clearTimeout(window.pieTooltipTimeout);
+        const timeoutKey = `${canvasId}TooltipTimeout`;
+        if (window[timeoutKey]) {
+          clearTimeout(window[timeoutKey]);
         }
-        window.pieTooltipTimeout = setTimeout(() => {
+        window[timeoutKey] = setTimeout(() => {
           tooltip.style.display = 'none';
         }, 300);
       }
     } else {
-      if (window.pieTooltipTimeout) {
-        clearTimeout(window.pieTooltipTimeout);
+      const timeoutKey = `${canvasId}TooltipTimeout`;
+      if (window[timeoutKey]) {
+        clearTimeout(window[timeoutKey]);
       }
-      window.pieTooltipTimeout = setTimeout(() => {
+      window[timeoutKey] = setTimeout(() => {
         tooltip.style.display = 'none';
       }, 300);
     }
   });
   
   canvas.addEventListener('mouseleave', () => {
-    if (window.pieTooltipTimeout) {
-      clearTimeout(window.pieTooltipTimeout);
+    const timeoutKey = `${canvasId}TooltipTimeout`;
+    if (window[timeoutKey]) {
+      clearTimeout(window[timeoutKey]);
     }
-    window.pieTooltipTimeout = setTimeout(() => {
+    window[timeoutKey] = setTimeout(() => {
       tooltip.style.display = 'none';
     }, 200);
   });
 }
 
 // Chart drawing function
-function drawChart() {
-  const canvas = document.getElementById('growthChart');
+function drawChart(canvasId = 'growthChart', tooltipId = 'chartTooltip') {
+  const canvas = document.getElementById(canvasId);
   if (!canvas) return;
   
   const ctx = canvas.getContext('2d');
-  const tooltip = document.getElementById('chartTooltip');
+  const tooltip = document.getElementById(tooltipId);
   
   // Set canvas size
   const rect = canvas.getBoundingClientRect();
@@ -1536,15 +1622,17 @@ function drawChart() {
       `;
       
       // Clear any existing timeout
-      if (window.tooltipTimeout) {
-        clearTimeout(window.tooltipTimeout);
+      const timeoutKey = `${canvasId}TooltipTimeout`;
+      if (window[timeoutKey]) {
+        clearTimeout(window[timeoutKey]);
       }
     } else {
       // Longer delay before hiding to prevent flickering
-      if (window.tooltipTimeout) {
-        clearTimeout(window.tooltipTimeout);
+      const timeoutKey = `${canvasId}TooltipTimeout`;
+      if (window[timeoutKey]) {
+        clearTimeout(window[timeoutKey]);
       }
-      window.tooltipTimeout = setTimeout(() => {
+      window[timeoutKey] = setTimeout(() => {
         tooltip.style.display = 'none';
       }, 300);
     }
@@ -1552,11 +1640,12 @@ function drawChart() {
   
   // Only hide immediately when mouse leaves canvas completely
   canvas.addEventListener('mouseleave', () => {
-    if (window.tooltipTimeout) {
-      clearTimeout(window.tooltipTimeout);
+    const timeoutKey = `${canvasId}TooltipTimeout`;
+    if (window[timeoutKey]) {
+      clearTimeout(window[timeoutKey]);
     }
     // Longer delay even on mouse leave
-    window.tooltipTimeout = setTimeout(() => {
+    window[timeoutKey] = setTimeout(() => {
       tooltip.style.display = 'none';
     }, 200);
   });
@@ -1569,17 +1658,29 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Draw charts after a short delay to ensure canvas is ready
   setTimeout(() => {
-    drawChart();
+    // First set of charts
+    drawChart('growthChart', 'chartTooltip');
     drawRevenueChart('revenueChart', 'revenueTooltip');
-    drawPieChart();
+    drawPieChart('pieChart', 'pieTooltip');
+    
+    // Second set of charts (duplicated)
+    drawChart('growthChart2', 'chartTooltip2');
+    drawRevenueChart('revenueChart2', 'revenueTooltip2');
+    drawPieChart('pieChart2', 'pieTooltip2');
   }, 100);
   
   // Redraw charts on window resize
   window.addEventListener('resize', () => {
     setTimeout(() => {
-      drawChart();
+      // First set of charts
+      drawChart('growthChart', 'chartTooltip');
       drawRevenueChart('revenueChart', 'revenueTooltip');
-      drawPieChart();
+      drawPieChart('pieChart', 'pieTooltip');
+      
+      // Second set of charts (duplicated)
+      drawChart('growthChart2', 'chartTooltip2');
+      drawRevenueChart('revenueChart2', 'revenueTooltip2');
+      drawPieChart('pieChart2', 'pieTooltip2');
     }, 100);
   });
 });
