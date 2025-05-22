@@ -19,164 +19,48 @@ function drawPieChart() {
   const ctx = canvas.getContext('2d');
   const tooltip = document.getElementById('pieTooltip');
   
+  // Force clear any existing event listeners
+  canvas.replaceWith(canvas.cloneNode(true));
+  const newCanvas = document.getElementById('pieChart');
+  const newCtx = newCanvas.getContext('2d');
+  
   // Set canvas size
-  const rect = canvas.getBoundingClientRect();
-  canvas.width = rect.width * window.devicePixelRatio;
-  canvas.height = rect.height * window.devicePixelRatio;
-  ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+  const rect = newCanvas.getBoundingClientRect();
+  newCanvas.width = rect.width * window.devicePixelRatio;
+  newCanvas.height = rect.height * window.devicePixelRatio;
+  newCtx.scale(window.devicePixelRatio, window.devicePixelRatio);
   
   const width = rect.width;
   const height = rect.height;
   
-  // Clear canvas
-  ctx.fillStyle = '#0a0a0a';
-  ctx.fillRect(0, 0, width, height);
+  // Clear canvas completely - use bright color to test
+  newCtx.fillStyle = '#0a0a0a';
+  newCtx.fillRect(0, 0, width, height);
   
   // Calculate center and radius
   const centerX = width / 2;
   const centerY = height / 2;
-  const radius = Math.min(width, height) * 0.35; // Outer radius
-  const innerRadius = radius * 0.95; // Massive hole - almost no donut visible (was 0.5, now 0.95)
+  const radius = Math.min(width, height) * 0.35;
+  const innerRadius = radius * 0.95;
   
-  // Calculate angles
-  let currentAngle = -Math.PI / 2; // Start at top
-  const segments = [];
+  // Just draw the donut - NO TEXT ANYWHERE
+  const redAngle = (95 / 100) * 2 * Math.PI;
   
-  pieData.data.forEach((value, i) => {
-    const sliceAngle = (value / 100) * 2 * Math.PI;
-    
-    segments.push({
-      startAngle: currentAngle,
-      endAngle: currentAngle + sliceAngle,
-      value: value,
-      label: pieData.labels[i],
-      color: pieData.colors[i]
-    });
-    
-    currentAngle += sliceAngle;
-  });
+  // Draw red segment (95%)
+  newCtx.beginPath();
+  newCtx.arc(centerX, centerY, radius, -Math.PI / 2, -Math.PI / 2 + redAngle);
+  newCtx.arc(centerX, centerY, innerRadius, -Math.PI / 2 + redAngle, -Math.PI / 2, true);
+  newCtx.closePath();
+  newCtx.fillStyle = '#880423';
+  newCtx.fill();
   
-  // Draw segments
-  segments.forEach(segment => {
-    // Draw outer arc
-    ctx.beginPath();
-    ctx.arc(centerX, centerY, radius, segment.startAngle, segment.endAngle);
-    ctx.arc(centerX, centerY, innerRadius, segment.endAngle, segment.startAngle, true);
-    ctx.closePath();
-    ctx.fillStyle = segment.color;
-    ctx.fill();
-  });
-  
-  // Draw legend
-  const legendY = height - 60;
-  let legendX = 30;
-  
-  segments.forEach((segment, i) => {
-    // Legend color box
-    ctx.fillStyle = segment.color;
-    ctx.fillRect(legendX, legendY, 12, 12);
-    
-    // Legend text
-    ctx.fillStyle = '#fff';
-    ctx.font = '12px Manrope, sans-serif';
-    ctx.textAlign = 'left';
-    ctx.fillText(`${segment.label} (${segment.value}%)`, legendX + 18, legendY + 9);
-    
-    legendX += ctx.measureText(`${segment.label} (${segment.value}%)`).width + 40;
-  });
-  
-  // Mouse hover functionality
-  canvas.addEventListener('mousemove', (e) => {
-    const rect = canvas.getBoundingClientRect();
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
-    
-    // Check if mouse is over any segment
-    const distanceFromCenter = Math.sqrt((mouseX - centerX) ** 2 + (mouseY - centerY) ** 2);
-    
-    if (distanceFromCenter >= innerRadius && distanceFromCenter <= radius) {
-      // Calculate angle from center to mouse
-      const angle = Math.atan2(mouseY - centerY, mouseX - centerX);
-      const normalizedAngle = angle < -Math.PI / 2 ? angle + 2 * Math.PI : angle;
-      
-      // Find which segment the mouse is over
-      const hoveredSegment = segments.find(segment => {
-        let startAngle = segment.startAngle;
-        let endAngle = segment.endAngle;
-        
-        // Normalize angles for comparison
-        if (startAngle < -Math.PI / 2) startAngle += 2 * Math.PI;
-        if (endAngle < -Math.PI / 2) endAngle += 2 * Math.PI;
-        
-        return normalizedAngle >= startAngle && normalizedAngle <= endAngle;
-      });
-      
-      if (hoveredSegment) {
-        const containerRect = canvas.closest('.chart-container').getBoundingClientRect();
-        const relativeX = e.clientX - containerRect.left;
-        const relativeY = e.clientY - containerRect.top;
-        
-        const tooltipWidth = 200;
-        const tooltipHeight = 100;
-        let leftPos = relativeX - 15;
-        let topPos = relativeY - 120;
-        
-        // Keep tooltip within chart container bounds
-        if (leftPos + tooltipWidth > containerRect.width) {
-          leftPos = containerRect.width - tooltipWidth - 10;
-        }
-        if (leftPos < 10) {
-          leftPos = 10;
-        }
-        
-        if (topPos < 10) {
-          topPos = relativeY + 20;
-        }
-        if (topPos + tooltipHeight > containerRect.height) {
-          topPos = containerRect.height - tooltipHeight - 10;
-        }
-        
-        tooltip.style.display = 'block';
-        tooltip.style.left = leftPos + 'px';
-        tooltip.style.top = topPos + 'px';
-        tooltip.innerHTML = `
-          <div class="tooltip-platform" style="color: ${hoveredSegment.color};">
-            <div class="tooltip-circle" style="background-color: ${hoveredSegment.color};"></div>
-            ${hoveredSegment.label}
-          </div>
-          <div class="tooltip-value">${hoveredSegment.value}%</div>
-          <div class="tooltip-growth">Traffic Source</div>
-        `;
-        
-        if (window.pieTooltipTimeout) {
-          clearTimeout(window.pieTooltipTimeout);
-        }
-      } else {
-        if (window.pieTooltipTimeout) {
-          clearTimeout(window.pieTooltipTimeout);
-        }
-        window.pieTooltipTimeout = setTimeout(() => {
-          tooltip.style.display = 'none';
-        }, 300);
-      }
-    } else {
-      if (window.pieTooltipTimeout) {
-        clearTimeout(window.pieTooltipTimeout);
-      }
-      window.pieTooltipTimeout = setTimeout(() => {
-        tooltip.style.display = 'none';
-      }, 300);
-    }
-  });
-  
-  canvas.addEventListener('mouseleave', () => {
-    if (window.pieTooltipTimeout) {
-      clearTimeout(window.pieTooltipTimeout);
-    }
-    window.pieTooltipTimeout = setTimeout(() => {
-      tooltip.style.display = 'none';
-    }, 200);
-  });
+  // Draw grey segment (5%)
+  newCtx.beginPath();
+  newCtx.arc(centerX, centerY, radius, -Math.PI / 2 + redAngle, -Math.PI / 2 + 2 * Math.PI);
+  newCtx.arc(centerX, centerY, innerRadius, -Math.PI / 2 + 2 * Math.PI, -Math.PI / 2 + redAngle, true);
+  newCtx.closePath();
+  newCtx.fillStyle = '#323131';
+  newCtx.fill();
 }
 
 /* 2) (Re-)define your container with a border */
@@ -929,7 +813,7 @@ const observer = new IntersectionObserver((entries) => {
 const pieData = {
   labels: ['Organic Traffic', 'Paid Advertising'],
   data: [95, 5],
-  colors: ['#880423', '#666666']
+  colors: ['#880423', '#323131']
 };
 
 // Revenue Chart Data
@@ -1213,24 +1097,6 @@ function drawPieChart() {
     ctx.closePath();
     ctx.fillStyle = segment.color;
     ctx.fill();
-  });
-  
-  // Draw legend
-  const legendY = height - 60;
-  let legendX = 30;
-  
-  segments.forEach((segment, i) => {
-    // Legend color box
-    ctx.fillStyle = segment.color;
-    ctx.fillRect(legendX, legendY, 12, 12);
-    
-    // Legend text
-    ctx.fillStyle = '#fff';
-    ctx.font = '12px Manrope, sans-serif';
-    ctx.textAlign = 'left';
-    ctx.fillText(`${segment.label} (${segment.value}%)`, legendX + 18, legendY + 9);
-    
-    legendX += ctx.measureText(`${segment.label} (${segment.value}%)`).width + 40;
   });
   
   // Mouse hover functionality
