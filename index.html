@@ -44,23 +44,118 @@ function drawPieChart() {
   const innerRadius = radius * 0.95;
   
   // Just draw the donut - NO TEXT ANYWHERE
-  const redAngle = (95 / 100) * 2 * Math.PI;
+  const greyAngle = (99 / 100) * 2 * Math.PI;
   
-  // Draw red segment (95%)
+  // Draw grey segment (99% - Organic Traffic)
   newCtx.beginPath();
-  newCtx.arc(centerX, centerY, radius, -Math.PI / 2, -Math.PI / 2 + redAngle);
-  newCtx.arc(centerX, centerY, innerRadius, -Math.PI / 2 + redAngle, -Math.PI / 2, true);
+  newCtx.arc(centerX, centerY, radius, -Math.PI / 2, -Math.PI / 2 + greyAngle);
+  newCtx.arc(centerX, centerY, innerRadius, -Math.PI / 2 + greyAngle, -Math.PI / 2, true);
+  newCtx.closePath();
+  newCtx.fillStyle = '#323131';
+  newCtx.fill();
+  
+  // Draw red segment (1% - Paid Advertising)
+  newCtx.beginPath();
+  newCtx.arc(centerX, centerY, radius, -Math.PI / 2 + greyAngle, -Math.PI / 2 + 2 * Math.PI);
+  newCtx.arc(centerX, centerY, innerRadius, -Math.PI / 2 + 2 * Math.PI, -Math.PI / 2 + greyAngle, true);
   newCtx.closePath();
   newCtx.fillStyle = '#880423';
   newCtx.fill();
   
-  // Draw grey segment (5%)
-  newCtx.beginPath();
-  newCtx.arc(centerX, centerY, radius, -Math.PI / 2 + redAngle, -Math.PI / 2 + 2 * Math.PI);
-  newCtx.arc(centerX, centerY, innerRadius, -Math.PI / 2 + 2 * Math.PI, -Math.PI / 2 + redAngle, true);
-  newCtx.closePath();
-  newCtx.fillStyle = '#323131';
-  newCtx.fill();
+  // Mouse hover functionality
+  newCanvas.addEventListener('mousemove', (e) => {
+    const rect = newCanvas.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    
+    const distanceFromCenter = Math.sqrt((mouseX - centerX) ** 2 + (mouseY - centerY) ** 2);
+    
+    if (distanceFromCenter >= innerRadius && distanceFromCenter <= radius) {
+      const angle = Math.atan2(mouseY - centerY, mouseX - centerX);
+      const normalizedAngle = angle < -Math.PI / 2 ? angle + 2 * Math.PI : angle;
+      
+      let hoveredSegment = null;
+      
+      // Check if hovering over grey segment (organic traffic)
+      if (normalizedAngle >= -Math.PI / 2 + 2 * Math.PI && normalizedAngle <= -Math.PI / 2 + 2 * Math.PI + greyAngle) {
+        hoveredSegment = {
+          label: 'Organic Traffic',
+          color: '#323131'
+        };
+      }
+      // Check if hovering over red segment (paid advertising)  
+      else if (normalizedAngle >= -Math.PI / 2 + 2 * Math.PI + greyAngle || normalizedAngle <= -Math.PI / 2 + 2 * Math.PI) {
+        hoveredSegment = {
+          label: 'Paid Advertising',
+          color: '#880423'
+        };
+      }
+      
+      if (hoveredSegment) {
+        const containerRect = newCanvas.closest('.chart-container').getBoundingClientRect();
+        const relativeX = e.clientX - containerRect.left;
+        const relativeY = e.clientY - containerRect.top;
+        
+        const tooltipWidth = 200;
+        const tooltipHeight = 100;
+        let leftPos = relativeX - 15;
+        let topPos = relativeY - 120;
+        
+        if (leftPos + tooltipWidth > containerRect.width) {
+          leftPos = containerRect.width - tooltipWidth - 10;
+        }
+        if (leftPos < 10) {
+          leftPos = 10;
+        }
+        
+        if (topPos < 10) {
+          topPos = relativeY + 20;
+        }
+        if (topPos + tooltipHeight > containerRect.height) {
+          topPos = containerRect.height - tooltipHeight - 10;
+        }
+        
+        tooltip.style.display = 'block';
+        tooltip.style.left = leftPos + 'px';
+        tooltip.style.top = topPos + 'px';
+        tooltip.innerHTML = `
+          <div class="tooltip-platform" style="color: ${hoveredSegment.color};">
+            <div class="tooltip-circle" style="background-color: ${hoveredSegment.color};"></div>
+            ${hoveredSegment.label}
+          </div>
+          <div class="tooltip-value">0% spent on ads</div>
+          <div class="tooltip-growth">Pure organic growth</div>
+        `;
+        
+        if (window.pieTooltipTimeout) {
+          clearTimeout(window.pieTooltipTimeout);
+        }
+      } else {
+        if (window.pieTooltipTimeout) {
+          clearTimeout(window.pieTooltipTimeout);
+        }
+        window.pieTooltipTimeout = setTimeout(() => {
+          tooltip.style.display = 'none';
+        }, 300);
+      }
+    } else {
+      if (window.pieTooltipTimeout) {
+        clearTimeout(window.pieTooltipTimeout);
+      }
+      window.pieTooltipTimeout = setTimeout(() => {
+        tooltip.style.display = 'none';
+      }, 300);
+    }
+  });
+  
+  newCanvas.addEventListener('mouseleave', () => {
+    if (window.pieTooltipTimeout) {
+      clearTimeout(window.pieTooltipTimeout);
+    }
+    window.pieTooltipTimeout = setTimeout(() => {
+      tooltip.style.display = 'none';
+    }, 200);
+  });
 }
 
 /* 2) (Re-)define your container with a border */
@@ -812,8 +907,8 @@ const observer = new IntersectionObserver((entries) => {
 // Pie Chart Data
 const pieData = {
   labels: ['Organic Traffic', 'Paid Advertising'],
-  data: [95, 5],
-  colors: ['#880423', '#323131']
+  data: [99, 1],
+  colors: ['#323131', '#880423']
 };
 
 // Revenue Chart Data
@@ -1098,6 +1193,8 @@ function drawPieChart() {
     ctx.fillStyle = segment.color;
     ctx.fill();
   });
+  
+
   
   // Mouse hover functionality
   canvas.addEventListener('mousemove', (e) => {
