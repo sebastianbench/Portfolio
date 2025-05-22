@@ -332,6 +332,8 @@
   display: flex;
   flex-direction: column;
   gap: 25px;  /* More space between image and text */
+  position: relative;
+  z-index: 1;  /* Lower z-index for gallery items */
 }
 
 /* Chart container styling */
@@ -344,6 +346,7 @@
   box-sizing: border-box;
   position: relative;
   transition: transform 0.3s ease;
+  overflow: visible;  /* Allow tooltip to show outside if needed */
 }
 
 .chart-container:hover {
@@ -361,12 +364,12 @@
 
 .chart-canvas {
   width: 100%;
-  height: calc(100% - 40px);
+  height: 100%;  /* Use full container height now */
 }
 
 /* Tooltip styling */
 .chart-tooltip {
-  position: fixed;  /* Changed from absolute to fixed for better positioning */
+  position: absolute !important;  /* Absolute positioning relative to chart container */
   background-color: rgba(0, 0, 0, 0.95);
   border: 1px solid #444;
   border-radius: 12px;
@@ -374,7 +377,7 @@
   font-family: 'Manrope', sans-serif;
   color: #fff;
   pointer-events: none;
-  z-index: 9999;  /* Much higher z-index to be on top of everything */
+  z-index: 100;  /* High within the chart container */
   display: none;
   min-width: 200px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
@@ -421,6 +424,8 @@
   border-radius: 15px;
   transition: transform 0.3s ease;
   background-color: #1a1a1a;  /* Dark background for letterboxing if needed */
+  position: relative;
+  z-index: 1;  /* Lower z-index for images */
 }
 
 .gallery-item img:hover {
@@ -678,7 +683,6 @@ body {
 <section class="gallery">
   <div class="gallery-item scale-in">
     <div class="chart-container">
-      <div class="chart-title">Yearly Growth</div>
       <canvas class="chart-canvas" id="growthChart"></canvas>
       <div class="chart-tooltip" id="chartTooltip"></div>
     </div>
@@ -1078,25 +1082,30 @@ function drawChart() {
     if (closestPoint) {
       tooltip.style.display = 'block';
       
-      // Smart positioning to avoid going off-screen
-      const tooltipWidth = 220;
+      // Position relative to the chart container, not the entire page
+      const containerRect = canvas.closest('.chart-container').getBoundingClientRect();
+      const relativeX = closestPoint.x - containerRect.left;
+      const relativeY = closestPoint.y - containerRect.top;
+      
+      // Smart positioning within chart boundaries
+      const tooltipWidth = 200;
       const tooltipHeight = 120;
-      let leftPos = closestPoint.x + 15;
-      let topPos = closestPoint.y - 70;
+      let leftPos = relativeX - 15;
+      let topPos = relativeY - 140;
       
-      // If tooltip would go off the right edge, position it to the left
-      if (leftPos + tooltipWidth > window.innerWidth) {
-        leftPos = closestPoint.x - tooltipWidth - 15;
+      // Keep tooltip within chart container bounds
+      if (leftPos + tooltipWidth > containerRect.width) {
+        leftPos = containerRect.width - tooltipWidth - 10;
+      }
+      if (leftPos < 10) {
+        leftPos = 10;
       }
       
-      // If tooltip would go off the top, position it below
-      if (topPos < 0) {
-        topPos = closestPoint.y + 15;
+      if (topPos < 10) {
+        topPos = relativeY + 20; // Below cursor if needed
       }
-      
-      // If tooltip would go off the bottom, position it above
-      if (topPos + tooltipHeight > window.innerHeight) {
-        topPos = closestPoint.y - tooltipHeight - 15;
+      if (topPos + tooltipHeight > containerRect.height) {
+        topPos = containerRect.height - tooltipHeight - 10;
       }
       
       tooltip.style.left = leftPos + 'px';
