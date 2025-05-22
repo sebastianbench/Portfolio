@@ -366,7 +366,7 @@
 
 /* Tooltip styling */
 .chart-tooltip {
-  position: absolute;
+  position: fixed;  /* Changed from absolute to fixed for better positioning */
   background-color: rgba(0, 0, 0, 0.95);
   border: 1px solid #444;
   border-radius: 12px;
@@ -374,7 +374,7 @@
   font-family: 'Manrope', sans-serif;
   color: #fff;
   pointer-events: none;
-  z-index: 100;
+  z-index: 9999;  /* Much higher z-index to be on top of everything */
   display: none;
   min-width: 200px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
@@ -1043,7 +1043,7 @@ function drawChart() {
     const mouseX = e.clientX - rect.left;
     const mouseY = e.clientY - rect.top;
     
-    // Find closest data point with larger detection area
+    // Find closest data point with even larger detection area
     let closestDistance = Infinity;
     let closestPoint = null;
     
@@ -1053,8 +1053,8 @@ function drawChart() {
         const y = margin.top + chartHeight - (value * scale);
         const distance = Math.sqrt((mouseX - x) ** 2 + (mouseY - y) ** 2);
         
-        // Increased detection radius from 20 to 40 pixels
-        if (distance < 40 && distance < closestDistance) {
+        // Much larger detection radius - 60 pixels
+        if (distance < 60 && distance < closestDistance) {
           closestDistance = distance;
           const prevValue = i > 0 ? dataset.data[i-1] : dataset.data[i];
           const growthPercent = i > 0 ? (((value - prevValue) / prevValue) * 100).toFixed(1) : 0;
@@ -1066,18 +1066,36 @@ function drawChart() {
             formattedValue: value >= 1000 ? (value/1000).toFixed(0) + 'k' : value.toLocaleString(),
             growth: growthPercent,
             color: dataset.color,
-            x: e.clientX,
-            y: e.clientY
+            // Position relative to canvas, not mouse
+            x: rect.left + x,
+            y: rect.top + y
           };
         }
       });
     });
     
-    // Show tooltip if we found a point, keep it visible longer
+    // Show tooltip if we found a point
     if (closestPoint) {
       tooltip.style.display = 'block';
-      tooltip.style.left = (closestPoint.x + 15) + 'px';
-      tooltip.style.top = (closestPoint.y - 80) + 'px';
+      
+      // Smart positioning to avoid going off-screen
+      const tooltipWidth = 200;
+      const tooltipHeight = 120;
+      let leftPos = closestPoint.x + 20;
+      let topPos = closestPoint.y - 60;
+      
+      // If tooltip would go off the right edge, position it to the left
+      if (leftPos + tooltipWidth > window.innerWidth) {
+        leftPos = closestPoint.x - tooltipWidth - 20;
+      }
+      
+      // If tooltip would go off the top, position it below
+      if (topPos < 0) {
+        topPos = closestPoint.y + 20;
+      }
+      
+      tooltip.style.left = leftPos + 'px';
+      tooltip.style.top = topPos + 'px';
       tooltip.innerHTML = `
         <div class="tooltip-platform" style="color: ${closestPoint.color};">
           <div class="tooltip-circle" style="background-color: ${closestPoint.color};"></div>
@@ -1093,13 +1111,13 @@ function drawChart() {
         clearTimeout(window.tooltipTimeout);
       }
     } else {
-      // Add a small delay before hiding to prevent flickering
+      // Longer delay before hiding to prevent flickering
       if (window.tooltipTimeout) {
         clearTimeout(window.tooltipTimeout);
       }
       window.tooltipTimeout = setTimeout(() => {
         tooltip.style.display = 'none';
-      }, 100);
+      }, 300);
     }
   });
   
@@ -1108,7 +1126,10 @@ function drawChart() {
     if (window.tooltipTimeout) {
       clearTimeout(window.tooltipTimeout);
     }
-    tooltip.style.display = 'none';
+    // Longer delay even on mouse leave
+    window.tooltipTimeout = setTimeout(() => {
+      tooltip.style.display = 'none';
+    }, 200);
   });
 }
 
