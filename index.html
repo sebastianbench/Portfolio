@@ -1194,7 +1194,18 @@ function drawPieChart() {
     ctx.fill();
   });
   
-
+// ⬇️ ADD LEGEND HERE (top)
+let legendX = 30;
+let legendY = 20;
+segments.forEach((segment, i) => {
+  ctx.fillStyle = segment.color;
+  ctx.fillRect(legendX, legendY, 12, 12);
+  ctx.fillStyle = '#fff';
+  ctx.font = '12px Manrope, sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText(`${segment.label} (${segment.value}%)`, legendX + 18, legendY + 10);
+  legendX += ctx.measureText(`${segment.label} (${segment.value}%)`).width + 50;
+});
   
   // Mouse hover functionality
   canvas.addEventListener('mousemove', (e) => {
