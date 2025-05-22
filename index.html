@@ -83,6 +83,52 @@
       font-family: 'Manrope', sans-serif;
       background-color: #111;
       color: #fff;
+      overflow-x: hidden; /* Prevent horizontal scroll during animations */
+    }
+
+    /* SCROLL ANIMATIONS */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .slide-in-left {
+      opacity: 0;
+      transform: translateX(-50px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .slide-in-left.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .slide-in-right {
+      opacity: 0;
+      transform: translateX(50px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .slide-in-right.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .scale-in {
+      opacity: 0;
+      transform: scale(0.9);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .scale-in.visible {
+      opacity: 1;
+      transform: scale(1);
     }
 
     .nav {
@@ -231,11 +277,11 @@
 .gallery {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
+  gap: 25px;
   width: 100%;
-  max-width: 1400px;  /* Wider than the main container (800px) */
+  max-width: 1800px;  /* Much wider for maximum graph visibility */
   margin: 60px auto;
-  padding: 0 2rem;
+  padding: 0 3rem;
   box-sizing: border-box;
 }
 
@@ -247,7 +293,7 @@
 
 .gallery-item img {
   width: 100%;
-  height: 250px;
+  height: 300px;  /* Increased height for better graph visibility */
   object-fit: cover;
   border-radius: 15px;
   transition: transform 0.3s ease;
@@ -392,7 +438,7 @@ body {
 
   
   <header>
-    <nav class="nav">
+    <nav class="nav fade-in">
       <div class="logo">
         <img src="https://github.com/sebastianbench/Portfolio/blob/main/images/Cover%20image%20CV4.png?raw=true" alt="Profile" class="avatar" />
       </div>
@@ -401,14 +447,14 @@ body {
 </ul>
 
     </nav>
-    <div class="hero">
+    <div class="hero slide-in-left">
       <p><span class="bold">Sebastian Echavarria.</span></p>
 <p><span class="bold">Marketing</span> <span class="extralight">Manager.</span></p>
 <p><span class="bold">Creative</span> <span class="extralight">Director.</span></p>
     </div>
   </header>
   <section class="content-section">
-    <div class="left-column">
+    <div class="left-column slide-in-left">
       <img src="https://github.com/sebastianbench/Portfolio/blob/main/images/rbm_logov2.png?raw=true" alt="RBM Logo">
        <p>
       <span class="bold">Marketing Manager.</span><br>
@@ -423,7 +469,7 @@ body {
       <li>9000+ orders since.</li>
     </ul>
   </div>
-  <div class="right-column">
+  <div class="right-column slide-in-right">
     <img src="https://github.com/sebastianbench/Portfolio/blob/main/images/udZrBBGrifhaOCPurprSRR7U5Iimsgauaw.jpg?raw=true"
          alt="Phone Preview">
   </div>
@@ -431,7 +477,7 @@ body {
     </div>
 
 <section class="gallery">
-  <div class="gallery-item">
+  <div class="gallery-item scale-in">
     <img
       src="https://github.com/sebastianbench/Portfolio/blob/main/images/111udZrBBGrifhaOCPurprSRR7U5I.jpg?raw=true"
       alt="Gallery Image 1"
@@ -452,7 +498,7 @@ body {
     </div>
   </div>
 
-  <div class="gallery-item">
+  <div class="gallery-item scale-in">
     <img
       src="https://github.com/sebastianbench/Portfolio/blob/main/images/222udZrBBGrifhaOCPurprSRR7U5I.jpg?raw=true"
       alt="Gallery Image 2"
@@ -473,7 +519,7 @@ body {
     </div>
   </div>
 
-  <div class="gallery-item">
+  <div class="gallery-item scale-in">
     <img
       src="https://github.com/sebastianbench/Portfolio/blob/main/images/333udZrBBGrifhaOCPurprSRR7U5I.jpg?raw=true"
       alt="Gallery Image 3"
@@ -496,6 +542,27 @@ body {
 </section>
 
 
+<script>
+// Scroll animation observer
+const observerOptions = {
+  threshold: 0.1,
+  rootMargin: '0px 0px -50px 0px'
+};
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, observerOptions);
+
+// Observe all elements with animation classes
+document.addEventListener('DOMContentLoaded', () => {
+  const animatedElements = document.querySelectorAll('.fade-in, .slide-in-left, .slide-in-right, .scale-in');
+  animatedElements.forEach(el => observer.observe(el));
+});
+</script>
   
 </body>
 </html>
