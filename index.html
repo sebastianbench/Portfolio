@@ -36,6 +36,39 @@
   margin: 0.2rem 0;
 }
 
+/* HERO TEXT REVEAL ANIMATION */
+.hero p {
+  opacity: 0;
+  filter: blur(10px);
+  transform: translateY(20px);
+  animation-fill-mode: forwards;
+}
+
+.hero p:nth-child(1) {
+  animation: textReveal 1s ease-out 0.5s forwards;
+}
+
+.hero p:nth-child(2) {
+  animation: textReveal 1s ease-out 1.5s forwards;
+}
+
+.hero p:nth-child(3) {
+  animation: textReveal 1s ease-out 2.5s forwards;
+}
+
+@keyframes textReveal {
+  0% {
+    opacity: 0;
+    filter: blur(10px);
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0);
+  }
+}
+
 /* H2 - Marketing Manager in main content */
 .left-column p .bold {
   font-size: 28px; /* ~80% of H1 */
@@ -299,7 +332,7 @@
 
 .gallery-item img {
   width: 100%;
-  height: 300px;  /* Increased height for better graph visibility */
+  height: 400px;  /* Even bigger for maximum visibility */
   object-fit: cover;
   border-radius: 15px;
   transition: transform 0.3s ease;
@@ -455,7 +488,7 @@ body {
 </ul>
 
     </nav>
-    <div class="hero slide-in-left">
+    <div class="hero">
       <p><span class="bold">Sebastian Echavarria.</span></p>
 <p><span class="bold">Marketing</span> <span class="extralight">Manager.</span></p>
 <p><span class="bold">Creative</span> <span class="extralight">Director.</span></p>
@@ -492,16 +525,12 @@ body {
     />
     <div class="gallery-caption">
       <p>
-        <span class="bold">Marketing Manager.</span><br />
-        <span class="extralight">
-          Red Bow Music.<br />
-          Bremen, Germany.
-        </span>
+        <span class="bold">Fast Growth.</span><br />
       </p>
       <ul>
-        <li>Founder of a company.</li>
-        <li>1000 orders in the first year.</li>
-        <li>9000+ orders since.</li>
+        <li>Grew by 100% in the 2nd year</li>
+        <li>Over 2 Mio. likes in the 5th year</li>
+        <li>Completely organic, no ads</li>
       </ul>
     </div>
   </div>
@@ -513,16 +542,12 @@ body {
     />
     <div class="gallery-caption">
       <p>
-        <span class="bold">Marketing Manager.</span><br />
-        <span class="extralight">
-          Red Bow Music.<br />
-          Bremen, Germany.
-        </span>
+        <span class="bold">Reliable Results.</span><br />
       </p>
       <ul>
-        <li>Founder of a company.</li>
-        <li>1000 orders in the first year.</li>
-        <li>9000+ orders since.</li>
+        <li>Consistent positive results</li>
+        <li>1000+ orders per year</li>
+        <li>Slowly increasing income</li>
       </ul>
     </div>
   </div>
@@ -534,16 +559,12 @@ body {
     />
     <div class="gallery-caption">
       <p>
-        <span class="bold">Marketing Manager.</span><br />
-        <span class="extralight">
-          Red Bow Music.<br />
-          Bremen, Germany.
-        </span>
+        <span class="bold">Expert CRM.</span><br />
       </p>
       <ul>
-        <li>Founder of a company.</li>
-        <li>1000 orders in the first year.</li>
-        <li>9000+ orders since.</li>
+        <li>Reliable customer service</li>
+        <li>Email marketing campaigns</li>
+        <li>Whatsapp and such</li>
       </ul>
     </div>
   </div>
