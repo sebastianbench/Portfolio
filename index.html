@@ -1201,7 +1201,7 @@ let legendY = 20;
 const maxLegendWidth = width - 40; // 20px padding on both sides
 
 segments.forEach((segment, i) => {
-  const labelText = `${segment.label};
+  const labelText = ${segment.label};
   const textWidth = ctx.measureText(labelText).width;
   const itemWidth = textWidth + 32; // box + spacing
 
