@@ -367,16 +367,50 @@
 /* Tooltip styling */
 .chart-tooltip {
   position: absolute;
-  background-color: rgba(0, 0, 0, 0.9);
-  border: 1px solid #333;
-  border-radius: 8px;
-  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.95);
+  border: 1px solid #444;
+  border-radius: 12px;
+  padding: 16px;
   font-family: 'Manrope', sans-serif;
-  font-size: 12px;
   color: #fff;
   pointer-events: none;
   z-index: 100;
   display: none;
+  min-width: 200px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.tooltip-platform {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+}
+
+.tooltip-circle {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.tooltip-value {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.tooltip-growth {
+  font-size: 12px;
+  font-weight: 600;
+  color: #4ade80;
+}
+
+.tooltip-year {
+  font-size: 12px;
+  color: #888;
+  margin-top: 8px;
 }
 
 .gallery-item img {
@@ -884,7 +918,7 @@ const chartData = {
     {
       label: 'Instagram',
       data: [500, 600, 1500, 15000, 55000, 85000],
-      color: '#ea174b'
+      color: '#ff406f'
     }
   ]
 };
@@ -1021,10 +1055,15 @@ function drawChart() {
         
         if (distance < 20 && distance < closestDistance) {
           closestDistance = distance;
+          const prevValue = i > 0 ? dataset.data[i-1] : dataset.data[i];
+          const growthPercent = i > 0 ? (((value - prevValue) / prevValue) * 100).toFixed(1) : 0;
+          
           closestPoint = {
             dataset: dataset.label,
             year: chartData.labels[i],
-            value: value.toLocaleString(),
+            value: value,
+            formattedValue: value >= 1000 ? (value/1000).toFixed(0) + 'k' : value.toLocaleString(),
+            growth: growthPercent,
             color: dataset.color,
             x: e.clientX,
             y: e.clientY
@@ -1035,11 +1074,16 @@ function drawChart() {
     
     if (closestPoint) {
       tooltip.style.display = 'block';
-      tooltip.style.left = (closestPoint.x + 10) + 'px';
-      tooltip.style.top = (closestPoint.y - 10) + 'px';
+      tooltip.style.left = (closestPoint.x + 15) + 'px';
+      tooltip.style.top = (closestPoint.y - 80) + 'px';
       tooltip.innerHTML = `
-        <div style="color: ${closestPoint.color}; font-weight: bold;">${closestPoint.dataset}</div>
-        <div>${closestPoint.year}: ${closestPoint.value}</div>
+        <div class="tooltip-platform" style="color: ${closestPoint.color};">
+          <div class="tooltip-circle" style="background-color: ${closestPoint.color};"></div>
+          ${closestPoint.dataset}
+        </div>
+        <div class="tooltip-value">${closestPoint.formattedValue}</div>
+        <div class="tooltip-growth">+${closestPoint.growth}% vs previous year</div>
+        <div class="tooltip-year">${closestPoint.year}</div>
       `;
     } else {
       tooltip.style.display = 'none';
