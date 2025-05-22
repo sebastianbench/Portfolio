@@ -214,9 +214,9 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
-      padding: 1.5rem;
+      padding: 2rem 1.5rem;  /* More generous padding */
       text-align: left;
-      margin: 0 auto;
+      margin: 2rem auto 1rem;  /* Better spacing around hero */
     }
 
     .hero p {
@@ -237,8 +237,8 @@
       flex-wrap: wrap;
       align-items: flex-start;
       justify-content: space-between;
-      padding: 2rem 1.5rem;
-      gap: 2rem;
+      padding: 3rem 1.5rem;  /* More generous padding */
+      gap: 3rem;  /* More space between columns */
       margin: 0 auto;
     }
 
@@ -248,22 +248,25 @@
 
     .left-column img {
       width: 60px;
-      margin-bottom: 1rem;
+      margin-bottom: 1.5rem;  /* More space after logo */
     }
 
     .left-column p {
       font-size: 20px;
       line-height: 1.6;
+      margin: 0 0 1.5rem;  /* More space after title block */
     }
 
     .left-column ul {
       margin-top: 0;
       padding-left: 1.5rem;
+      margin-bottom: 4rem;  /* Keep existing bottom spacing */
     }
 
     .left-column ul li {
       font-size: 16px;
-      line-height: 1.6;
+      line-height: 1.7;  /* Better line spacing */
+      margin-bottom: 8px;  /* Space between list items */
     }
 
     .right-column img {
@@ -316,10 +319,10 @@
 .gallery {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 25px;
+  gap: 40px;  /* More breathing room */
   width: 100%;
-  max-width: 1800px;  /* Much wider for maximum graph visibility */
-  margin: 60px auto;
+  max-width: 1800px;
+  margin: 80px auto 100px;  /* More space above and below */
   padding: 0 3rem;
   box-sizing: border-box;
 }
@@ -327,12 +330,12 @@
 .gallery-item {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 25px;  /* More space between image and text */
 }
 
 .gallery-item img {
   width: 100%;
-  height: 400px;  /* Even bigger for maximum visibility */
+  height: 400px;
   object-fit: cover;
   border-radius: 15px;
   transition: transform 0.3s ease;
@@ -344,31 +347,31 @@
 
 .gallery-caption p {
   font-size: 16px;
-  line-height: 1.4;
-  margin: 0;
+  line-height: 1.6;  /* Better line spacing */
+  margin: 0 0 20px 0;  /* Space below title */
 }
 
 /* H3 - Gallery titles */
 .gallery-caption .bold {
-  font-size: 21px; /* Same as H3 in main content */
+  font-size: 21px;
 }
 
 .gallery-caption .extralight {
-  font-size: 21px; /* Same as H3 in main content */
+  font-size: 21px;
   display: block;
   margin-bottom: 10px;
 }
 
 .gallery-caption ul {
-  margin: 10px 0 0 0;
-  padding-left: 1.2rem;
+  margin: 0;
+  padding-left: 1.5rem;
 }
 
 /* Paragraph - Gallery list items */
 .gallery-caption ul li {
-  font-size: 16px; /* Same as paragraph in main content */
-  line-height: 1.4;
-  margin-bottom: 5px;
+  font-size: 16px;
+  line-height: 1.6;  /* Better line spacing */
+  margin-bottom: 10px;  /* More space between list items */
 }
 
 /* Tablet view */
@@ -376,26 +379,49 @@
   .gallery {
     grid-template-columns: 1fr 1fr;
     max-width: 90%;
-    gap: 15px;
+    gap: 30px;  /* Good spacing for tablet */
+    margin: 60px auto 80px;
+    padding: 0 2rem;
+  }
+  
+  .gallery-item {
+    gap: 20px;
   }
   
   .gallery-item img {
-    height: 200px;
+    height: 280px;  /* Better proportion for tablet */
+  }
+  
+  .gallery-caption p {
+    margin-bottom: 15px;
   }
 }
 
-/* Mobile view */
+/* Mobile view - Much more generous spacing */
 @media (max-width: 768px) {
   .gallery {
     grid-template-columns: 1fr;
     max-width: 100%;
-    padding: 0 1rem;
-    margin: 40px auto;
-    gap: 25px;
+    padding: 0 1.5rem;  /* More side padding */
+    margin: 50px auto 60px;  /* Generous vertical margins */
+    gap: 50px;  /* Much more space between items */
+  }
+  
+  .gallery-item {
+    gap: 30px;  /* More space between image and text */
   }
   
   .gallery-item img {
-    height: 200px;
+    height: 250px;  /* Good size for mobile */
+  }
+  
+  .gallery-caption p {
+    margin-bottom: 20px;  /* More space below title */
+  }
+  
+  .gallery-caption ul li {
+    margin-bottom: 12px;  /* More space between bullet points */
+    line-height: 1.7;  /* Even better line spacing on mobile */
   }
 }
 
@@ -405,50 +431,70 @@ body {
 }
 
   @media (max-width: 768px) {
-  /* 1) Expand the hero's padding so it breathes */
+  /* Hero section - more breathing room */
   .hero {
-    padding: 2rem 0;    /* 2rem on top and bottom */
+    padding: 2.5rem 1rem;
+    margin: 1.5rem auto 2rem;
   }
 
-  /* 2) Stack content, phone first, with custom gutters */
+  /* Content section - better mobile spacing */
   .content-section {
     display: flex;
     flex-direction: column;
-    gap: 0;            /* we'll use margins instead */
+    gap: 0;
+    padding: 2rem 1rem;  /* More generous mobile padding */
   }
 
   .content-section .right-column {
     order: -1;
-    margin: 2.5rem 0 0.75rem;  /* 2.5rem above, 0.75rem below */
-    margin-top: 2rem !important;
+    margin: 0 0 2rem;  /* Clean spacing below image */
   }
 
-  .content-section .left-column img {
-    margin-top: 0;        /* flush under the phone image */
-    margin-bottom: 1rem;  /* 1rem before the text below */
-  }
-
-     .content-section .right-column img {
-    margin-top: 0;        /* flush under the phone image */
-    margin-bottom: 1rem;  /* 1rem before the text below */
-   margin-top: 2rem !important;
-  }
-
-  /* 3) Un-cap and pad the container */
-  .container {
-    max-width: none;
-    width: 100%;
-    padding: 0 0.5rem;
+  .content-section .left-column {
     margin: 0;
   }
 
-  /* 4) Ensure nav and hero also fill edge-to-edge */
+  .content-section .left-column img {
+    margin-bottom: 2rem;  /* More space after logo */
+  }
+
+  .content-section .left-column p {
+    margin-bottom: 2rem;  /* More space after title block */
+  }
+
+  .content-section .left-column ul {
+    margin-bottom: 3rem;  /* Space before gallery */
+  }
+
+  .content-section .left-column ul li {
+    margin-bottom: 10px;  /* More space between mobile list items */
+    line-height: 1.8;  /* Better line spacing on mobile */
+  }
+
+  .content-section .right-column img {
+    margin: 0;
+  }
+
+  /* Container adjustments */
+  .container {
+    max-width: none;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+  }
+
+  /* Navigation and sections */
   .nav,
   .hero,
   .content-section {
     width: 100%;
-    padding: 0 0.5rem;
     margin: 0 auto;
+  }
+
+  /* Navigation spacing */
+  .nav {
+    margin: 2rem 0 !important;
+    padding: 0 1rem;
   }
 }
 
