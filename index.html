@@ -707,10 +707,10 @@ body {
   </div>
 
   <div class="gallery-item scale-in">
-    <img
-      src="https://github.com/sebastianbench/Portfolio/blob/main/images/222udZrBBGrifhaOCPurprSRR7U5I.jpg?raw=true"
-      alt="Gallery Image 2"
-    />
+    <div class="chart-container">
+      <canvas class="chart-canvas" id="revenueChart"></canvas>
+      <div class="chart-tooltip" id="revenueTooltip"></div>
+    </div>
     <div class="gallery-caption">
       <p>
         <span class="bold">Reliable Results.</span><br />
@@ -913,6 +913,13 @@ const observer = new IntersectionObserver((entries) => {
   });
 }, observerOptions);
 
+// Revenue Chart Data
+const revenueData = {
+  labels: ["'20", "'21", "'22", "'23", "'24", "'25"],
+  data: [0.05, 0.1, 2, 10, 22, 30],
+  colors: ['#323131', '#323131', '#323131', '#323131', '#323131', '#880423']  // Updated grey color
+};
+
 // Growth Chart Data
 const chartData = {
   labels: ["'20", "'21", "'22", "'23", "'24", "'25"],
@@ -935,6 +942,200 @@ const chartData = {
   ]
 };
 
+// Revenue Bar Chart drawing function
+function drawRevenueChart() {
+  const canvas = document.getElementById('revenueChart');
+  if (!canvas) return;
+  
+  const ctx = canvas.getContext('2d');
+  const tooltip = document.getElementById('revenueTooltip');
+  
+  // Set canvas size
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width * window.devicePixelRatio;
+  canvas.height = rect.height * window.devicePixelRatio;
+  ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+  
+  const width = rect.width;
+  const height = rect.height;
+  
+  // Chart margins
+  const margin = { top: 40, right: 5, bottom: 60, left: 60 };  
+  const chartWidth = width - margin.left - margin.right;
+  const chartHeight = height - margin.top - margin.bottom;
+  
+  // Adjust margins for smaller screens
+  if (width < 768) {
+    margin.top = 30;  
+    margin.right = 2;   
+    margin.bottom = 40;  
+    margin.left = 45;   
+  }
+  
+  // Clear canvas
+  ctx.fillStyle = '#0a0a0a';
+  ctx.fillRect(0, 0, width, height);
+  
+  // Find max value for scaling
+  const maxValue = Math.max(...revenueData.data);
+  const scale = chartHeight / maxValue;
+  
+  // Draw axes
+  ctx.strokeStyle = '#666';
+  ctx.lineWidth = 2;
+  
+  // Y-axis
+  ctx.beginPath();
+  ctx.moveTo(margin.left, margin.top);
+  ctx.lineTo(margin.left, margin.top + chartHeight);
+  ctx.stroke();
+  
+  // X-axis
+  ctx.beginPath();
+  ctx.moveTo(margin.left, margin.top + chartHeight);
+  ctx.lineTo(margin.left + chartWidth, margin.top + chartHeight);
+  ctx.stroke();
+  
+  // Y-axis labels
+  for (let i = 0; i <= 5; i++) {
+    const y = margin.top + (chartHeight * i / 5);
+    ctx.fillStyle = '#888';
+    ctx.font = '12px Manrope, sans-serif';
+    ctx.textAlign = 'right';
+    const value = Math.round(maxValue * (5 - i) / 5);
+    const formattedValue = value >= 1 ? value + 'k €' : (value * 1000) + ' €';
+    ctx.fillText(formattedValue, margin.left - 10, y + 4);
+  }
+  
+  // Draw bars with rounded tops
+  const barWidth = chartWidth / revenueData.data.length * 0.6; // 60% width with spacing
+  const barSpacing = chartWidth / revenueData.data.length;
+  const borderRadius = 8; // Radius for rounded tops
+  
+  revenueData.data.forEach((value, i) => {
+    const barHeight = value * scale;
+    const x = margin.left + (barSpacing * i) + (barSpacing - barWidth) / 2;
+    const y = margin.top + chartHeight - barHeight;
+    
+    // Draw bar with rounded top
+    ctx.fillStyle = revenueData.colors[i];
+    ctx.beginPath();
+    
+    if (barHeight > borderRadius) {
+      // Rectangle body
+      ctx.rect(x, y + borderRadius, barWidth, barHeight - borderRadius);
+      // Rounded top
+      ctx.moveTo(x, y + borderRadius);
+      ctx.arcTo(x, y, x + borderRadius, y, borderRadius);
+      ctx.lineTo(x + barWidth - borderRadius, y);
+      ctx.arcTo(x + barWidth, y, x + barWidth, y + borderRadius, borderRadius);
+      ctx.lineTo(x + barWidth, y + barHeight);
+      ctx.lineTo(x, y + barHeight);
+      ctx.closePath();
+    } else {
+      // For very small bars, just draw a rounded rectangle
+      ctx.roundRect(x, y, barWidth, barHeight, [borderRadius, borderRadius, 0, 0]);
+    }
+    
+    ctx.fill();
+    
+    // X-axis labels
+    ctx.fillStyle = '#888';
+    ctx.font = '12px Manrope, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(revenueData.labels[i], x + barWidth/2, height - margin.bottom + 20);
+  });
+  
+  // Mouse hover functionality for bars
+  canvas.addEventListener('mousemove', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    
+    let hoveredBar = null;
+    
+    revenueData.data.forEach((value, i) => {
+      const barHeight = value * scale;
+      const x = margin.left + (barSpacing * i) + (barSpacing - barWidth) / 2;
+      const y = margin.top + chartHeight - barHeight;
+      
+      // Check if mouse is over this bar
+      if (mouseX >= x && mouseX <= x + barWidth && mouseY >= y && mouseY <= y + barHeight) {
+        const prevValue = i > 0 ? revenueData.data[i-1] : revenueData.data[i];
+        const growthPercent = i > 0 ? (((value - prevValue) / prevValue) * 100).toFixed(1) : 0;
+        
+        hoveredBar = {
+          year: revenueData.labels[i],
+          value: value,
+          formattedValue: value >= 1 ? value + 'k €' : (value * 1000) + ' €',
+          growth: growthPercent,
+          color: revenueData.colors[i],
+          x: e.clientX,
+          y: e.clientY
+        };
+      }
+    });
+    
+    if (hoveredBar) {
+      const containerRect = canvas.closest('.chart-container').getBoundingClientRect();
+      const relativeX = hoveredBar.x - containerRect.left;
+      const relativeY = hoveredBar.y - containerRect.top;
+      
+      const tooltipWidth = 200;
+      const tooltipHeight = 120;
+      let leftPos = relativeX - 15;
+      let topPos = relativeY - 140;
+      
+      // Keep tooltip within chart container bounds
+      if (leftPos + tooltipWidth > containerRect.width) {
+        leftPos = containerRect.width - tooltipWidth - 10;
+      }
+      if (leftPos < 10) {
+        leftPos = 10;
+      }
+      
+      if (topPos < 10) {
+        topPos = relativeY + 20;
+      }
+      if (topPos + tooltipHeight > containerRect.height) {
+        topPos = containerRect.height - tooltipHeight - 10;
+      }
+      
+      tooltip.style.display = 'block';
+      tooltip.style.left = leftPos + 'px';
+      tooltip.style.top = topPos + 'px';
+      tooltip.innerHTML = `
+        <div class="tooltip-platform" style="color: ${hoveredBar.color};">
+          <div class="tooltip-circle" style="background-color: ${hoveredBar.color};"></div>
+          Revenue
+        </div>
+        <div class="tooltip-value">${hoveredBar.formattedValue}</div>
+        <div class="tooltip-growth">+${hoveredBar.growth}% vs previous year</div>
+        <div class="tooltip-year">${hoveredBar.year}</div>
+      `;
+      
+      if (window.revenueTooltipTimeout) {
+        clearTimeout(window.revenueTooltipTimeout);
+      }
+    } else {
+      if (window.revenueTooltipTimeout) {
+        clearTimeout(window.revenueTooltipTimeout);
+      }
+      window.revenueTooltipTimeout = setTimeout(() => {
+        tooltip.style.display = 'none';
+      }, 300);
+    }
+  });
+  
+  canvas.addEventListener('mouseleave', () => {
+    if (window.revenueTooltipTimeout) {
+      clearTimeout(window.revenueTooltipTimeout);
+    }
+    window.revenueTooltipTimeout = setTimeout(() => {
+      tooltip.style.display = 'none';
+    }, 200);
+  });
+}
 // Chart drawing function
 function drawChart() {
   const canvas = document.getElementById('growthChart');
@@ -1182,12 +1383,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const animatedElements = document.querySelectorAll('.fade-in, .slide-in-left, .slide-in-right, .scale-in');
   animatedElements.forEach(el => observer.observe(el));
   
-  // Draw chart after a short delay to ensure canvas is ready
-  setTimeout(drawChart, 100);
+  // Draw charts after a short delay to ensure canvas is ready
+  setTimeout(() => {
+    drawChart();
+    drawRevenueChart();
+  }, 100);
   
-  // Redraw chart on window resize
+  // Redraw charts on window resize
   window.addEventListener('resize', () => {
-    setTimeout(drawChart, 100);
+    setTimeout(() => {
+      drawChart();
+      drawRevenueChart();
+    }, 100);
   });
 });
 </script>
