@@ -334,6 +334,51 @@
   gap: 25px;  /* More space between image and text */
 }
 
+/* Chart container styling */
+.chart-container {
+  width: 100%;
+  height: 400px;
+  background-color: #0a0a0a;
+  border-radius: 15px;
+  padding: 20px;
+  box-sizing: border-box;
+  position: relative;
+  transition: transform 0.3s ease;
+}
+
+.chart-container:hover {
+  transform: scale(1.02);
+}
+
+.chart-title {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  color: #fff;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.chart-canvas {
+  width: 100%;
+  height: calc(100% - 40px);
+}
+
+/* Tooltip styling */
+.chart-tooltip {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.9);
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 10px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 12px;
+  color: #fff;
+  pointer-events: none;
+  z-index: 100;
+  display: none;
+}
+
 .gallery-item img {
   width: 100%;
   height: 400px;
@@ -598,10 +643,11 @@ body {
 
 <section class="gallery">
   <div class="gallery-item scale-in">
-    <img
-      src="https://github.com/sebastianbench/Portfolio/blob/main/images/111udZrBBGrifhaOCPurprSRR7U5I.jpg?raw=true"
-      alt="Gallery Image 1"
-    />
+    <div class="chart-container">
+      <div class="chart-title">Yearly Growth</div>
+      <canvas class="chart-canvas" id="growthChart"></canvas>
+      <div class="chart-tooltip" id="chartTooltip"></div>
+    </div>
     <div class="gallery-caption">
       <p>
         <span class="bold">Fast Growth.</span><br />
@@ -821,10 +867,202 @@ const observer = new IntersectionObserver((entries) => {
   });
 }, observerOptions);
 
-// Observe all elements with animation classes
+// Growth Chart Data
+const chartData = {
+  labels: ['2020', '2021', '2022', '2023', '2024', '2025'],
+  datasets: [
+    {
+      label: 'YouTube',
+      data: [1000, 3000, 6000, 25000, 55000, 130000],
+      color: '#8a0324'
+    },
+    {
+      label: 'TikTok', 
+      data: [3000, 7000, 10000, 30000, 65000, 95000],
+      color: '#c1123d'
+    },
+    {
+      label: 'Instagram',
+      data: [500, 600, 1500, 15000, 55000, 85000],
+      color: '#ea174b'
+    }
+  ]
+};
+
+// Chart drawing function
+function drawChart() {
+  const canvas = document.getElementById('growthChart');
+  if (!canvas) return;
+  
+  const ctx = canvas.getContext('2d');
+  const tooltip = document.getElementById('chartTooltip');
+  
+  // Set canvas size
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width * window.devicePixelRatio;
+  canvas.height = rect.height * window.devicePixelRatio;
+  ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+  
+  const width = rect.width;
+  const height = rect.height;
+  
+  // Chart margins
+  const margin = { top: 40, right: 40, bottom: 60, left: 80 };
+  const chartWidth = width - margin.left - margin.right;
+  const chartHeight = height - margin.top - margin.bottom;
+  
+  // Clear canvas
+  ctx.fillStyle = '#0a0a0a';
+  ctx.fillRect(0, 0, width, height);
+  
+  // Find max value for scaling
+  const maxValue = Math.max(...chartData.datasets.flatMap(d => d.data));
+  const scale = chartHeight / maxValue;
+  
+  // Draw axes only (no grid)
+  ctx.strokeStyle = '#666';
+  ctx.lineWidth = 2;
+  
+  // Y-axis
+  ctx.beginPath();
+  ctx.moveTo(margin.left, margin.top);
+  ctx.lineTo(margin.left, margin.top + chartHeight);
+  ctx.stroke();
+  
+  // X-axis
+  ctx.beginPath();
+  ctx.moveTo(margin.left, margin.top + chartHeight);
+  ctx.lineTo(margin.left + chartWidth, margin.top + chartHeight);
+  ctx.stroke();
+  
+  // Y-axis labels
+  for (let i = 0; i <= 5; i++) {
+    const y = margin.top + (chartHeight * i / 5);
+    ctx.fillStyle = '#888';
+    ctx.font = '12px Manrope, sans-serif';
+    ctx.textAlign = 'right';
+    const value = Math.round(maxValue * (5 - i) / 5);
+    ctx.fillText(value.toLocaleString(), margin.left - 10, y + 4);
+  }
+  
+  // X-axis labels
+  for (let i = 0; i < chartData.labels.length; i++) {
+    const x = margin.left + (chartWidth * i / (chartData.labels.length - 1));
+    ctx.fillStyle = '#888';
+    ctx.font = '12px Manrope, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(chartData.labels[i], x, height - margin.bottom + 20);
+  }
+  
+  // Draw data lines
+  chartData.datasets.forEach((dataset, datasetIndex) => {
+    ctx.strokeStyle = dataset.color;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    
+    dataset.data.forEach((value, i) => {
+      const x = margin.left + (chartWidth * i / (chartData.labels.length - 1));
+      const y = margin.top + chartHeight - (value * scale);
+      
+      if (i === 0) {
+        ctx.moveTo(x, y);
+      } else {
+        ctx.lineTo(x, y);
+      }
+    });
+    
+    ctx.stroke();
+    
+    // Draw points
+    ctx.fillStyle = dataset.color;
+    dataset.data.forEach((value, i) => {
+      const x = margin.left + (chartWidth * i / (chartData.labels.length - 1));
+      const y = margin.top + chartHeight - (value * scale);
+      
+      ctx.beginPath();
+      ctx.arc(x, y, 4, 0, 2 * Math.PI);
+      ctx.fill();
+    });
+  });
+  
+  // Draw legend
+  const legendY = margin.top - 20;
+  let legendX = margin.left;
+  
+  chartData.datasets.forEach((dataset, i) => {
+    // Legend color box
+    ctx.fillStyle = dataset.color;
+    ctx.fillRect(legendX, legendY, 12, 12);
+    
+    // Legend text
+    ctx.fillStyle = '#fff';
+    ctx.font = '12px Manrope, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText(dataset.label, legendX + 18, legendY + 9);
+    
+    legendX += ctx.measureText(dataset.label).width + 40;
+  });
+  
+  // Mouse hover functionality
+  canvas.addEventListener('mousemove', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    
+    // Find closest data point
+    let closestDistance = Infinity;
+    let closestPoint = null;
+    
+    chartData.datasets.forEach((dataset, datasetIndex) => {
+      dataset.data.forEach((value, i) => {
+        const x = margin.left + (chartWidth * i / (chartData.labels.length - 1));
+        const y = margin.top + chartHeight - (value * scale);
+        const distance = Math.sqrt((mouseX - x) ** 2 + (mouseY - y) ** 2);
+        
+        if (distance < 20 && distance < closestDistance) {
+          closestDistance = distance;
+          closestPoint = {
+            dataset: dataset.label,
+            year: chartData.labels[i],
+            value: value.toLocaleString(),
+            color: dataset.color,
+            x: e.clientX,
+            y: e.clientY
+          };
+        }
+      });
+    });
+    
+    if (closestPoint) {
+      tooltip.style.display = 'block';
+      tooltip.style.left = (closestPoint.x + 10) + 'px';
+      tooltip.style.top = (closestPoint.y - 10) + 'px';
+      tooltip.innerHTML = `
+        <div style="color: ${closestPoint.color}; font-weight: bold;">${closestPoint.dataset}</div>
+        <div>${closestPoint.year}: ${closestPoint.value}</div>
+      `;
+    } else {
+      tooltip.style.display = 'none';
+    }
+  });
+  
+  canvas.addEventListener('mouseleave', () => {
+    tooltip.style.display = 'none';
+  });
+}
+
+// Initialize everything when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
   const animatedElements = document.querySelectorAll('.fade-in, .slide-in-left, .slide-in-right, .scale-in');
   animatedElements.forEach(el => observer.observe(el));
+  
+  // Draw chart after a short delay to ensure canvas is ready
+  setTimeout(drawChart, 100);
+  
+  // Redraw chart on window resize
+  window.addEventListener('resize', () => {
+    setTimeout(drawChart, 100);
+  });
 });
 </script>
   
