@@ -1066,9 +1066,9 @@ function drawChart() {
             formattedValue: value >= 1000 ? (value/1000).toFixed(0) + 'k' : value.toLocaleString(),
             growth: growthPercent,
             color: dataset.color,
-            // Position relative to canvas, not mouse
-            x: rect.left + x,
-            y: rect.top + y
+            // Use actual mouse position for more accurate positioning
+            x: e.clientX,
+            y: e.clientY
           };
         }
       });
@@ -1079,19 +1079,24 @@ function drawChart() {
       tooltip.style.display = 'block';
       
       // Smart positioning to avoid going off-screen
-      const tooltipWidth = 200;
+      const tooltipWidth = 220;
       const tooltipHeight = 120;
-      let leftPos = closestPoint.x + 20;
-      let topPos = closestPoint.y - 60;
+      let leftPos = closestPoint.x + 15;
+      let topPos = closestPoint.y - 70;
       
       // If tooltip would go off the right edge, position it to the left
       if (leftPos + tooltipWidth > window.innerWidth) {
-        leftPos = closestPoint.x - tooltipWidth - 20;
+        leftPos = closestPoint.x - tooltipWidth - 15;
       }
       
       // If tooltip would go off the top, position it below
       if (topPos < 0) {
-        topPos = closestPoint.y + 20;
+        topPos = closestPoint.y + 15;
+      }
+      
+      // If tooltip would go off the bottom, position it above
+      if (topPos + tooltipHeight > window.innerHeight) {
+        topPos = closestPoint.y - tooltipHeight - 15;
       }
       
       tooltip.style.left = leftPos + 'px';
