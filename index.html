@@ -1022,8 +1022,44 @@ const chartData = {
   ]
 };
 
+  // NEW: 2nd set of colors for the duplicated charts
+const chartData2 = {
+  labels: ["'20", "'21", "'22", "'23", "'24", "'25"],
+  datasets: [
+    {
+      label: 'YouTube',
+      data: [800, 1500, 3000, 8000, 20000, 50000],
+      color: '#4a90e2' // blue
+    },
+    {
+      label: 'TikTok',
+      data: [1000, 2000, 4000, 15000, 30000, 45000],
+      color: '#50e3c2' // teal
+    },
+    {
+      label: 'Instagram',
+      data: [400, 500, 1200, 7000, 18000, 30000],
+      color: '#f5a623' // orange
+    }
+  ]
+};
+
+const revenueData2 = {
+  labels: ["'20", "'21", "'22", "'23", "'24", "'25"],
+  data: [0.02, 0.08, 1, 5, 12, 20],
+  colors: ['#4a90e2', '#4a90e2', '#4a90e2', '#50e3c2', '#50e3c2', '#f5a623']
+};
+
+const pieData2 = {
+  labels: ['Organic', 'Paid'],
+  data: [92, 8],
+  colors: ['#4a90e2', '#f5a623']
+};
+
+
 // Revenue Bar Chart drawing function
-function drawRevenueChart(canvasId = 'revenueChart', tooltipId = 'revenueTooltip') {
+function drawRevenueChart(canvasId = 'revenueChart', tooltipId = 'revenueTooltip', revenueDataInput = revenueData) {
+  const revenueData = revenueDataInput;
   const canvas = document.getElementById(canvasId);
   if (!canvas) return;
   
@@ -1221,7 +1257,8 @@ function drawRevenueChart(canvasId = 'revenueChart', tooltipId = 'revenueTooltip
 }
 
 // Pie Chart drawing function
-function drawPieChart(canvasId = 'pieChart', tooltipId = 'pieTooltip') {
+function drawPieChart(canvasId = 'pieChart', tooltipId = 'pieTooltip', pieDataInput = pieData) {
+  const pieData = pieDataInput;
   const canvas = document.getElementById(canvasId);
   if (!canvas) return;
   
@@ -1407,7 +1444,8 @@ segments.forEach((segment, i) => {
 }
 
 // Chart drawing function
-function drawChart(canvasId = 'growthChart', tooltipId = 'chartTooltip') {
+function drawChart(canvasId = 'growthChart', tooltipId = 'chartTooltip', chartDataInput = chartData) {
+  const chartData = chartDataInput;
   const canvas = document.getElementById(canvasId);
   if (!canvas) return;
   
@@ -1657,30 +1695,30 @@ document.addEventListener('DOMContentLoaded', () => {
   animatedElements.forEach(el => observer.observe(el));
   
   // Draw charts after a short delay to ensure canvas is ready
-  setTimeout(() => {
+    setTimeout(() => {
     // First set of charts
-    drawChart('growthChart', 'chartTooltip');
-    drawRevenueChart('revenueChart', 'revenueTooltip');
-    drawPieChart('pieChart', 'pieTooltip');
-    
-    // Second set of charts (duplicated)
-    drawChart('growthChart2', 'chartTooltip2');
-    drawRevenueChart('revenueChart2', 'revenueTooltip2');
-    drawPieChart('pieChart2', 'pieTooltip2');
+    drawChart('growthChart', 'chartTooltip', chartData);
+    drawRevenueChart('revenueChart', 'revenueTooltip', revenueData);
+    drawPieChart('pieChart', 'pieTooltip', pieData);
+
+    // Second set of charts with different colors
+    drawChart('growthChart2', 'chartTooltip2', chartData2);
+    drawRevenueChart('revenueChart2', 'revenueTooltip2', revenueData2);
+    drawPieChart('pieChart2', 'pieTooltip2', pieData2);
   }, 100);
-  
+
   // Redraw charts on window resize
   window.addEventListener('resize', () => {
     setTimeout(() => {
       // First set of charts
-      drawChart('growthChart', 'chartTooltip');
-      drawRevenueChart('revenueChart', 'revenueTooltip');
-      drawPieChart('pieChart', 'pieTooltip');
-      
-      // Second set of charts (duplicated)
-      drawChart('growthChart2', 'chartTooltip2');
-      drawRevenueChart('revenueChart2', 'revenueTooltip2');
-      drawPieChart('pieChart2', 'pieTooltip2');
+      drawChart('growthChart', 'chartTooltip', chartData);
+      drawRevenueChart('revenueChart', 'revenueTooltip', revenueData);
+      drawPieChart('pieChart', 'pieTooltip', pieData);
+
+      // Second set of charts with different colors
+      drawChart('growthChart2', 'chartTooltip2', chartData2);
+      drawRevenueChart('revenueChart2', 'revenueTooltip2', revenueData2);
+      drawPieChart('pieChart2', 'pieTooltip2', pieData2);
     }, 100);
   });
 });
