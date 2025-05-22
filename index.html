@@ -352,7 +352,7 @@
 /* Mobile adjustments for chart */
 @media (max-width: 768px) {
   .chart-container {
-    padding: 15px;  /* Less padding on mobile for more chart space */
+    padding: 10px;  /* Much less padding on mobile for maximum chart space */
     margin: 0;      /* Remove any extra margins */
   }
 }
@@ -526,7 +526,7 @@
   .gallery {
     grid-template-columns: 1fr;
     max-width: 100%;
-    padding: 0 1.5rem;  /* More side padding */
+    padding: 0 0.5rem;  /* Much less side padding on mobile */
     margin: 50px auto 60px;  /* Generous vertical margins */
     gap: 50px;  /* Much more space between items */
   }
@@ -953,16 +953,16 @@ function drawChart() {
   const height = rect.height;
   
   // Chart margins
-  const margin = { top: 50, right: 40, bottom: 60, left: 90 };  // Increased left margin for Y-axis labels
+  const margin = { top: 60, right: 40, bottom: 60, left: 90 };  // Increased top margin for multi-line legend
   const chartWidth = width - margin.left - margin.right;
   const chartHeight = height - margin.top - margin.bottom;
   
   // Adjust margins for mobile
   if (width < 768) {
-    margin.top = 40;
-    margin.right = 20;
-    margin.bottom = 50;
-    margin.left = 70;
+    margin.top = 50;  // More space for potential multi-line legend
+    margin.right = 10;  // Much smaller right margin on mobile
+    margin.bottom = 40;  // Smaller bottom margin
+    margin.left = 50;   // Much smaller left margin on mobile
   }
   
   // Clear canvas
@@ -1039,12 +1039,23 @@ function drawChart() {
     });
   });
   
-  // Draw legend with better mobile positioning
-  const legendY = margin.top - 20;
+  // Draw legend with better mobile positioning and multi-line support
+  const legendStartY = margin.top - 30;
   let legendX = margin.left;
+  let legendY = legendStartY;
   const isMobile = width < 768;
+  const maxLegendWidth = chartWidth - 20; // Leave some margin
   
   chartData.datasets.forEach((dataset, i) => {
+    const textWidth = ctx.measureText(dataset.label).width;
+    const itemWidth = textWidth + 40; // Text width + spacing
+    
+    // Check if current item would overflow, if so move to next line
+    if (legendX + itemWidth > margin.left + maxLegendWidth && i > 0) {
+      legendX = margin.left;
+      legendY += 25; // Move to next line
+    }
+    
     // Legend color box
     ctx.fillStyle = dataset.color;
     ctx.fillRect(legendX, legendY, 12, 12);
@@ -1055,13 +1066,7 @@ function drawChart() {
     ctx.textAlign = 'left';
     ctx.fillText(dataset.label, legendX + 18, legendY + 9);
     
-    const textWidth = ctx.measureText(dataset.label).width;
-    legendX += textWidth + (isMobile ? 25 : 40);  // Less spacing on mobile
-    
-    // If legend would go outside chart area, move to next line or adjust
-    if (legendX + 100 > margin.left + chartWidth && i < chartData.datasets.length - 1) {
-      legendX = margin.left;
-    }
+    legendX += itemWidth;
   });
   
   // Mouse hover functionality
