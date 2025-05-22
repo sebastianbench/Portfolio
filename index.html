@@ -46,7 +46,7 @@ function drawPieChart() {
   // Just draw the donut - NO TEXT ANYWHERE
   const greyAngle = (99 / 100) * 2 * Math.PI;
   
-  // Draw grey segment (99% - Organic)
+  // Draw grey segment (99% - Organic Traffic)
   newCtx.beginPath();
   newCtx.arc(centerX, centerY, radius, -Math.PI / 2, -Math.PI / 2 + greyAngle);
   newCtx.arc(centerX, centerY, innerRadius, -Math.PI / 2 + greyAngle, -Math.PI / 2, true);
@@ -54,7 +54,7 @@ function drawPieChart() {
   newCtx.fillStyle = '#323131';
   newCtx.fill();
   
-  // Draw red segment (1% - Paid)
+  // Draw red segment (1% - Paid Advertising)
   newCtx.beginPath();
   newCtx.arc(centerX, centerY, radius, -Math.PI / 2 + greyAngle, -Math.PI / 2 + 2 * Math.PI);
   newCtx.arc(centerX, centerY, innerRadius, -Math.PI / 2 + 2 * Math.PI, -Math.PI / 2 + greyAngle, true);
@@ -1201,7 +1201,7 @@ let legendY = 20;
 const maxLegendWidth = width - 40; // 20px padding on both sides
 
 segments.forEach((segment, i) => {
-  const labelText = ${segment.label};
+  const labelText = `${segment.label} (${segment.value}%)`;
   const textWidth = ctx.measureText(labelText).width;
   const itemWidth = textWidth + 32; // box + spacing
 
