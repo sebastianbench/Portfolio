@@ -227,40 +227,34 @@
 }
   
 
-/* ——— Final, authoritative gallery styling ——— */
 .gallery {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 3 columns on desktop */
-  gap: 10px;                             /* space between items */
-  
-  /* make it wider than the .container above */
-  max-width: 1200px;
-  width: 100%;
-  margin: 20px auto;                     /* center with vertical spacing */
-  padding: 0 1rem;                       /* same side gutters as above */
-  
-  box-sizing: border-box;                /* include padding in width */
+  grid-template-columns: repeat(3, 1fr); /* 3 columns desktop */
+  gap: 10px;
+  width: 100vw;         /* Stretch to viewport width */
+  max-width: none;      /* Remove any max-width */
+  margin: 40px 0 20px 0; /* Vertical space, no side margin */
+  padding: 0 2.5vw;     /* Gutter on both sides; use % for responsive gutters */
+  box-sizing: border-box;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
 }
 
-.gallery-item {
-  display: flex;
-  flex-direction: column;
-}
-
-.gallery img {
-  width: 100%;
-  height: auto;
-  border-radius: 10px;
-  display: block;
-}
-
-/* ——— Collapse to one column on small screens ——— */
+/* For smaller screens, match left/right gutter to .container */
 @media (max-width: 768px) {
   .gallery {
-    grid-template-columns: 1fr !important;  /* force single column */
-    max-width: none !important;             /* drop the 1200px cap */
-    padding: 0 0.5rem !important;           /* match mobile gutter */
-    margin: 20px 0 !important;              /* only vertical spacing */
+    grid-template-columns: 1fr !important;
+    width: 100%;
+    max-width: none !important;
+    padding: 0 0.5rem !important;
+    margin: 20px 0 !important;
+    left: 0;
+    right: 0;
+    margin-left: 0;
+    margin-right: 0;
   }
 }
 
