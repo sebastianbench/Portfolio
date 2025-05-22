@@ -24,26 +24,32 @@
 }
 
     
-    /* Ensure your bold spans actually use the 700‐weight font */
+    /* Typography Hierarchy */
 .bold {
   font-family: 'Manrope', sans-serif;
   font-weight: 700;
 }
-    
-/* 1) "Marketing Manager." = 41px */
-.left-column p .bold {
-  font-size: 30px;
+
+/* H1 - Hero title (keep current size) */
+.hero p {
+  font-size: 35px; /* Keep as is */
+  margin: 0.2rem 0;
 }
 
-/* 2) "Red Bow Music." & "Bremen, Germany." = 35px */
+/* H2 - Marketing Manager in main content */
+.left-column p .bold {
+  font-size: 28px; /* ~80% of H1 */
+}
+
+/* H3 - Company name and location in main content */
 .left-column p .extralight {
-  font-size: 25px;
+  font-size: 21px; /* ~60% of H1 */
   display: block;
 }
 
-/* 3) List items = 27px */
+/* Paragraph - List items in main content */
 .left-column ul li {
-  font-size: 20px;
+  font-size: 16px; /* ~45% of H1 */
 }
     
 /* — Web-fonts — */
@@ -309,12 +315,13 @@
   margin: 0;
 }
 
+/* H3 - Gallery titles */
 .gallery-caption .bold {
-  font-size: 18px;
+  font-size: 21px; /* Same as H3 in main content */
 }
 
 .gallery-caption .extralight {
-  font-size: 14px;
+  font-size: 21px; /* Same as H3 in main content */
   display: block;
   margin-bottom: 10px;
 }
@@ -324,8 +331,9 @@
   padding-left: 1.2rem;
 }
 
+/* Paragraph - Gallery list items */
 .gallery-caption ul li {
-  font-size: 14px;
+  font-size: 16px; /* Same as paragraph in main content */
   line-height: 1.4;
   margin-bottom: 5px;
 }
