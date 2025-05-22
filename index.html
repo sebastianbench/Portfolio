@@ -349,6 +349,14 @@
   overflow: visible;  /* Allow tooltip to show outside if needed */
 }
 
+/* Mobile adjustments for chart */
+@media (max-width: 768px) {
+  .chart-container {
+    padding: 15px;  /* Less padding on mobile for more chart space */
+    margin: 0;      /* Remove any extra margins */
+  }
+}
+
 .chart-container:hover {
   transform: scale(1.02);
 }
@@ -945,9 +953,17 @@ function drawChart() {
   const height = rect.height;
   
   // Chart margins
-  const margin = { top: 40, right: 40, bottom: 60, left: 80 };
+  const margin = { top: 50, right: 40, bottom: 60, left: 90 };  // Increased left margin for Y-axis labels
   const chartWidth = width - margin.left - margin.right;
   const chartHeight = height - margin.top - margin.bottom;
+  
+  // Adjust margins for mobile
+  if (width < 768) {
+    margin.top = 40;
+    margin.right = 20;
+    margin.bottom = 50;
+    margin.left = 70;
+  }
   
   // Clear canvas
   ctx.fillStyle = '#0a0a0a';
@@ -1023,9 +1039,10 @@ function drawChart() {
     });
   });
   
-  // Draw legend
+  // Draw legend with better mobile positioning
   const legendY = margin.top - 20;
   let legendX = margin.left;
+  const isMobile = width < 768;
   
   chartData.datasets.forEach((dataset, i) => {
     // Legend color box
@@ -1034,11 +1051,17 @@ function drawChart() {
     
     // Legend text
     ctx.fillStyle = '#fff';
-    ctx.font = '12px Manrope, sans-serif';
+    ctx.font = isMobile ? '10px Manrope, sans-serif' : '12px Manrope, sans-serif';
     ctx.textAlign = 'left';
     ctx.fillText(dataset.label, legendX + 18, legendY + 9);
     
-    legendX += ctx.measureText(dataset.label).width + 40;
+    const textWidth = ctx.measureText(dataset.label).width;
+    legendX += textWidth + (isMobile ? 25 : 40);  // Less spacing on mobile
+    
+    // If legend would go outside chart area, move to next line or adjust
+    if (legendX + 100 > margin.left + chartWidth && i < chartData.datasets.length - 1) {
+      legendX = margin.left;
+    }
   });
   
   // Mouse hover functionality
