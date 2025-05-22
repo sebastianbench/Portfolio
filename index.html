@@ -11,153 +11,6 @@
   box-sizing: border-box;
 }
 
-// Pie Chart drawing function
-function drawPieChart() {
-  const canvas = document.getElementById('pieChart');
-  if (!canvas) return;
-  
-  const ctx = canvas.getContext('2d');
-  const tooltip = document.getElementById('pieTooltip');
-  
-  // Force clear any existing event listeners
-  canvas.replaceWith(canvas.cloneNode(true));
-  const newCanvas = document.getElementById('pieChart');
-  const newCtx = newCanvas.getContext('2d');
-  
-  // Set canvas size
-  const rect = newCanvas.getBoundingClientRect();
-  newCanvas.width = rect.width * window.devicePixelRatio;
-  newCanvas.height = rect.height * window.devicePixelRatio;
-  newCtx.scale(window.devicePixelRatio, window.devicePixelRatio);
-  
-  const width = rect.width;
-  const height = rect.height;
-  
-  // Clear canvas completely - use bright color to test
-  newCtx.fillStyle = '#0a0a0a';
-  newCtx.fillRect(0, 0, width, height);
-  
-  // Calculate center and radius
-  const centerX = width / 2;
-  const centerY = height / 2;
-  const radius = Math.min(width, height) * 0.35;
-  const innerRadius = radius * 0.95;
-  
-  // Just draw the donut - NO TEXT ANYWHERE
-  const greyAngle = (99 / 100) * 2 * Math.PI;
-  
-  // Draw grey segment (99% - Organic Traffic)
-  newCtx.beginPath();
-  newCtx.arc(centerX, centerY, radius, -Math.PI / 2, -Math.PI / 2 + greyAngle);
-  newCtx.arc(centerX, centerY, innerRadius, -Math.PI / 2 + greyAngle, -Math.PI / 2, true);
-  newCtx.closePath();
-  newCtx.fillStyle = '#323131';
-  newCtx.fill();
-  
-  // Draw red segment (1% - Paid Advertising)
-  newCtx.beginPath();
-  newCtx.arc(centerX, centerY, radius, -Math.PI / 2 + greyAngle, -Math.PI / 2 + 2 * Math.PI);
-  newCtx.arc(centerX, centerY, innerRadius, -Math.PI / 2 + 2 * Math.PI, -Math.PI / 2 + greyAngle, true);
-  newCtx.closePath();
-  newCtx.fillStyle = '#880423';
-  newCtx.fill();
-  
-  // Mouse hover functionality
-  newCanvas.addEventListener('mousemove', (e) => {
-    const rect = newCanvas.getBoundingClientRect();
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
-    
-    const distanceFromCenter = Math.sqrt((mouseX - centerX) ** 2 + (mouseY - centerY) ** 2);
-    
-    if (distanceFromCenter >= innerRadius && distanceFromCenter <= radius) {
-      const angle = Math.atan2(mouseY - centerY, mouseX - centerX);
-      const normalizedAngle = angle < -Math.PI / 2 ? angle + 2 * Math.PI : angle;
-      
-      let hoveredSegment = null;
-      
-      // Check if hovering over grey segment (organic traffic)
-      if (normalizedAngle >= -Math.PI / 2 + 2 * Math.PI && normalizedAngle <= -Math.PI / 2 + 2 * Math.PI + greyAngle) {
-        hoveredSegment = {
-          label: 'Organic Traffic',
-          color: '#323131'
-        };
-      }
-      // Check if hovering over red segment (paid advertising)  
-      else if (normalizedAngle >= -Math.PI / 2 + 2 * Math.PI + greyAngle || normalizedAngle <= -Math.PI / 2 + 2 * Math.PI) {
-        hoveredSegment = {
-          label: 'Paid Advertising',
-          color: '#880423'
-        };
-      }
-      
-      if (hoveredSegment) {
-        const containerRect = newCanvas.closest('.chart-container').getBoundingClientRect();
-        const relativeX = e.clientX - containerRect.left;
-        const relativeY = e.clientY - containerRect.top;
-        
-        const tooltipWidth = 200;
-        const tooltipHeight = 100;
-        let leftPos = relativeX - 15;
-        let topPos = relativeY - 120;
-        
-        if (leftPos + tooltipWidth > containerRect.width) {
-          leftPos = containerRect.width - tooltipWidth - 10;
-        }
-        if (leftPos < 10) {
-          leftPos = 10;
-        }
-        
-        if (topPos < 10) {
-          topPos = relativeY + 20;
-        }
-        if (topPos + tooltipHeight > containerRect.height) {
-          topPos = containerRect.height - tooltipHeight - 10;
-        }
-        
-        tooltip.style.display = 'block';
-        tooltip.style.left = leftPos + 'px';
-        tooltip.style.top = topPos + 'px';
-        tooltip.innerHTML = `
-          <div class="tooltip-platform" style="color: ${hoveredSegment.color};">
-            <div class="tooltip-circle" style="background-color: ${hoveredSegment.color};"></div>
-            ${hoveredSegment.label}
-          </div>
-          <div class="tooltip-value">0% spent on ads</div>
-          <div class="tooltip-growth">Pure organic growth</div>
-        `;
-        
-        if (window.pieTooltipTimeout) {
-          clearTimeout(window.pieTooltipTimeout);
-        }
-      } else {
-        if (window.pieTooltipTimeout) {
-          clearTimeout(window.pieTooltipTimeout);
-        }
-        window.pieTooltipTimeout = setTimeout(() => {
-          tooltip.style.display = 'none';
-        }, 300);
-      }
-    } else {
-      if (window.pieTooltipTimeout) {
-        clearTimeout(window.pieTooltipTimeout);
-      }
-      window.pieTooltipTimeout = setTimeout(() => {
-        tooltip.style.display = 'none';
-      }, 300);
-    }
-  });
-  
-  newCanvas.addEventListener('mouseleave', () => {
-    if (window.pieTooltipTimeout) {
-      clearTimeout(window.pieTooltipTimeout);
-    }
-    window.pieTooltipTimeout = setTimeout(() => {
-      tooltip.style.display = 'none';
-    }, 200);
-  });
-}
-
 /* 2) (Re-)define your container with a border */
 .container {
   /* no more white outline */
@@ -496,11 +349,72 @@ function drawPieChart() {
   overflow: visible;  /* Allow tooltip to show outside if needed */
 }
 
+/* Text metrics container - similar styling to chart container */
+.metrics-container {
+  width: 100%;
+  height: 400px;
+  background-color: #0a0a0a;
+  border-radius: 15px;
+  padding: 40px 20px;
+  box-sizing: border-box;
+  position: relative;
+  transition: transform 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.metrics-container:hover {
+  transform: scale(1.02);
+}
+
+.metrics-item {
+  margin: 20px 0;
+  font-family: 'Manrope', sans-serif;
+}
+
+.metrics-number {
+  font-size: 36px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.metrics-label {
+  font-size: 18px;
+  font-weight: 400;
+  color: #888;
+  display: block;
+}
+
+.metrics-number.b2c {
+  color: #0064d3;
+}
+
+.metrics-number.b2b {
+  color: #328bef;
+}
+
 /* Mobile adjustments for chart */
 @media (max-width: 768px) {
   .chart-container {
     padding: 10px;  /* Minimal but some padding for mobile */
     margin: 0;      /* Remove any extra margins */
+  }
+  
+  .metrics-container {
+    padding: 30px 15px;
+  }
+  
+  .metrics-number {
+    font-size: 28px;
+  }
+  
+  .metrics-label {
+    font-size: 16px;
   }
 }
 
@@ -863,12 +777,12 @@ body {
     </div>
     <div class="gallery-caption">
       <p>
-        <span class="bold">Reliable Results.</span><br />
+        <span class="bold">Email Performance.</span><br />
       </p>
       <ul>
-        <li>Consistent positive results</li>
-        <li>1000+ orders per year</li>
-        <li>Slowly increasing income</li>
+        <li>35% open rate in 2025</li>
+        <li>Consistent year-over-year growth</li>
+        <li>Strong B2B engagement metrics</li>
       </ul>
     </div>
   </div>
@@ -880,12 +794,12 @@ body {
     </div>
     <div class="gallery-caption">
       <p>
-        <span class="bold">Reliable Results.</span><br />
+        <span class="bold">Organic Growth.</span><br />
       </p>
       <ul>
-        <li>Consistent positive results</li>
-        <li>1000+ orders per year</li>
-        <li>Slowly increasing income</li>
+        <li>99% organic traffic</li>
+        <li>Zero paid advertising</li>
+        <li>Pure content-driven results</li>
       </ul>
     </div>
   </div>
@@ -919,18 +833,24 @@ body {
 <!-- SECOND GALLERY (DUPLICATED) -->
 <section class="gallery">
   <div class="gallery-item scale-in">
-    <div class="chart-container">
-      <canvas class="chart-canvas" id="growthChart2"></canvas>
-      <div class="chart-tooltip" id="chartTooltip2"></div>
+    <div class="metrics-container">
+      <div class="metrics-item">
+        <span class="metrics-number b2c">+4,800</span>
+        <span class="metrics-label">B2C conversions</span>
+      </div>
+      <div class="metrics-item">
+        <span class="metrics-number b2b">+120</span>
+        <span class="metrics-label">new B2B partners</span>
+      </div>
     </div>
     <div class="gallery-caption">
       <p>
-        <span class="bold">Fast Growth.</span><br />
+        <span class="bold">Key Results.</span><br />
       </p>
       <ul>
-        <li>Grew by 100% in the 2nd year</li>
-        <li>Over 2 Mio. likes in the 5th year</li>
-        <li>Completely organic, no ads</li>
+        <li>4,800 direct customer conversions</li>
+        <li>120 new business partnerships</li>
+        <li>Consistent growth quarter over quarter</li>
       </ul>
     </div>
   </div>
@@ -954,17 +874,17 @@ body {
 
   <div class="gallery-item scale-in">
     <div class="chart-container">
-      <canvas class="chart-canvas" id="pieChart2"></canvas>
-      <div class="chart-tooltip" id="pieTooltip2"></div>
+      <canvas class="chart-canvas" id="efficiencyChart"></canvas>
+      <div class="chart-tooltip" id="efficiencyTooltip"></div>
     </div>
     <div class="gallery-caption">
       <p>
-        <span class="bold">Reliable Results.</span><br />
+        <span class="bold">Process Efficiency.</span><br />
       </p>
       <ul>
-        <li>Consistent positive results</li>
-        <li>1000+ orders per year</li>
-        <li>Slowly increasing income</li>
+        <li>Reduced workload from 17h to 4h per week</li>
+        <li>76% efficiency improvement over 2 years</li>
+        <li>Streamlined B2B operations</li>
       </ul>
     </div>
   </div>
@@ -1045,15 +965,16 @@ const chartData2 = {
 };
 
 const revenueData2 = {
-  labels: ["'20", "'21", "'22", "'23", "'24", "'25"],
-  data: [0.02, 0.08, 1, 5, 12, 20],
-  colors: ['#323031', '#323031', '#323031', '#323031', '#323031', '#0064d3']
+  labels: ["'23", "'24", "'25"],
+  data: [26, 32, 35],
+  colors: ['#0064d3', '#0064d3', '#328bef']
 };
 
-const pieData2 = {
-  labels: ['Organic', 'Paid'],
-  data: [92, 8],
-  colors: ['#323031', '#0064d3']
+const efficiencyData = {
+  labels: ["'23", "'24", "'25"],
+  data: [17, 10, 4],
+  color: '#0064d3',
+  fillColor: 'rgba(50, 139, 239, 0.3)' // Light blue with transparency
 };
 
 
@@ -1119,7 +1040,9 @@ function drawRevenueChart(canvasId = 'revenueChart', tooltipId = 'revenueTooltip
     ctx.font = '12px Manrope, sans-serif';
     ctx.textAlign = 'right';
     const value = Math.round(maxValue * (5 - i) / 5);
-    const formattedValue = value >= 1 ? value + 'k €' : (value * 1000) + ' €';
+    // Format as percentage for email open rates, or currency for revenue
+    const formattedValue = canvasId === 'revenueChart2' ? value + '%' : 
+                          (value >= 1 ? value + 'k €' : (value * 1000) + ' €');
     ctx.fillText(formattedValue, margin.left - 10, y + 4);
   }
   
@@ -1183,7 +1106,8 @@ function drawRevenueChart(canvasId = 'revenueChart', tooltipId = 'revenueTooltip
         hoveredBar = {
           year: revenueData.labels[i],
           value: value,
-          formattedValue: value >= 1 ? value + 'k €' : (value * 1000) + ' €',
+          formattedValue: canvasId === 'revenueChart2' ? value + '%' : 
+                         (value >= 1 ? value + 'k €' : (value * 1000) + ' €'),
           growth: growthPercent,
           color: revenueData.colors[i],
           x: e.clientX,
@@ -1443,6 +1367,216 @@ segments.forEach((segment, i) => {
   });
 }
 
+// Efficiency Line Chart drawing function
+function drawEfficiencyChart(canvasId = 'efficiencyChart', tooltipId = 'efficiencyTooltip') {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  
+  const ctx = canvas.getContext('2d');
+  const tooltip = document.getElementById(tooltipId);
+  
+  // Set canvas size
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width * window.devicePixelRatio;
+  canvas.height = rect.height * window.devicePixelRatio;
+  ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+  
+  const width = rect.width;
+  const height = rect.height;
+  
+  // Chart margins
+  const margin = { top: 40, right: 20, bottom: 60, left: 60 };  
+  const chartWidth = width - margin.left - margin.right;
+  const chartHeight = height - margin.top - margin.bottom;
+  
+  // Adjust margins for smaller screens
+  if (width < 768) {
+    margin.top = 30;  
+    margin.right = 15;   
+    margin.bottom = 40;  
+    margin.left = 45;   
+  }
+  
+  // Clear canvas
+  ctx.fillStyle = '#0a0a0a';
+  ctx.fillRect(0, 0, width, height);
+  
+  // Max value is 20 for hours
+  const maxValue = 20;
+  const scale = chartHeight / maxValue;
+  
+  // Draw axes
+  ctx.strokeStyle = '#666';
+  ctx.lineWidth = 2;
+  
+  // Y-axis
+  ctx.beginPath();
+  ctx.moveTo(margin.left, margin.top);
+  ctx.lineTo(margin.left, margin.top + chartHeight);
+  ctx.stroke();
+  
+  // X-axis
+  ctx.beginPath();
+  ctx.moveTo(margin.left, margin.top + chartHeight);
+  ctx.lineTo(margin.left + chartWidth, margin.top + chartHeight);
+  ctx.stroke();
+  
+  // Y-axis labels (0 to 20 hours)
+  for (let i = 0; i <= 5; i++) {
+    const y = margin.top + (chartHeight * i / 5);
+    ctx.fillStyle = '#888';
+    ctx.font = '12px Manrope, sans-serif';
+    ctx.textAlign = 'right';
+    const value = Math.round(maxValue * (5 - i) / 5);
+    ctx.fillText(value + 'h', margin.left - 10, y + 4);
+  }
+  
+  // X-axis labels
+  for (let i = 0; i < efficiencyData.labels.length; i++) {
+    const x = margin.left + (chartWidth * i / (efficiencyData.labels.length - 1));
+    ctx.fillStyle = '#888';
+    ctx.font = '12px Manrope, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(efficiencyData.labels[i], x, height - margin.bottom + 20);
+  }
+  
+  // Create path for filled area
+  ctx.beginPath();
+  ctx.moveTo(margin.left, margin.top + chartHeight); // Start at bottom-left
+  
+  // Draw line points and create fill path
+  const points = [];
+  efficiencyData.data.forEach((value, i) => {
+    const x = margin.left + (chartWidth * i / (efficiencyData.data.length - 1));
+    const y = margin.top + chartHeight - (value * scale);
+    points.push({x, y, value, label: efficiencyData.labels[i]});
+    ctx.lineTo(x, y);
+  });
+  
+  // Complete the fill area by going to bottom-right and closing
+  ctx.lineTo(margin.left + chartWidth, margin.top + chartHeight);
+  ctx.closePath();
+  
+  // Fill the area under the line
+  ctx.fillStyle = efficiencyData.fillColor;
+  ctx.fill();
+  
+  // Draw the line on top
+  ctx.strokeStyle = efficiencyData.color;
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  
+  efficiencyData.data.forEach((value, i) => {
+    const x = margin.left + (chartWidth * i / (efficiencyData.data.length - 1));
+    const y = margin.top + chartHeight - (value * scale);
+    
+    if (i === 0) {
+      ctx.moveTo(x, y);
+    } else {
+      ctx.lineTo(x, y);
+    }
+  });
+  
+  ctx.stroke();
+  
+  // Draw points
+  ctx.fillStyle = efficiencyData.color;
+  points.forEach(point => {
+    ctx.beginPath();
+    ctx.arc(point.x, point.y, 4, 0, 2 * Math.PI);
+    ctx.fill();
+  });
+  
+  // Mouse hover functionality
+  canvas.addEventListener('mousemove', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    
+    // Find closest data point
+    let closestDistance = Infinity;
+    let closestPoint = null;
+    
+    points.forEach((point, i) => {
+      const distance = Math.sqrt((mouseX - point.x) ** 2 + (mouseY - point.y) ** 2);
+      
+      if (distance < 40 && distance < closestDistance) {
+        closestDistance = distance;
+        const prevValue = i > 0 ? efficiencyData.data[i-1] : efficiencyData.data[i];
+        const changePercent = i > 0 ? (((point.value - prevValue) / prevValue) * 100).toFixed(1) : 0;
+        const changeText = changePercent < 0 ? `${changePercent}%` : `+${changePercent}%`;
+        
+        closestPoint = {
+          year: point.label,
+          value: point.value,
+          change: changeText,
+          x: e.clientX,
+          y: e.clientY
+        };
+      }
+    });
+    
+    if (closestPoint) {
+      const containerRect = canvas.closest('.chart-container').getBoundingClientRect();
+      const relativeX = closestPoint.x - containerRect.left;
+      const relativeY = closestPoint.y - containerRect.top;
+      
+      const tooltipWidth = 200;
+      const tooltipHeight = 120;
+      let leftPos = relativeX - 15;
+      let topPos = relativeY - 140;
+      
+      // Keep tooltip within chart container bounds
+      if (leftPos + tooltipWidth > containerRect.width) {
+        leftPos = containerRect.width - tooltipWidth - 10;
+      }
+      if (leftPos < 10) {
+        leftPos = 10;
+      }
+      
+      if (topPos < 10) {
+        topPos = relativeY + 20;
+      }
+      if (topPos + tooltipHeight > containerRect.height) {
+        topPos = containerRect.height - tooltipHeight - 10;
+      }
+      
+      tooltip.style.display = 'block';
+      tooltip.style.left = leftPos + 'px';
+      tooltip.style.top = topPos + 'px';
+      tooltip.innerHTML = `
+        <div class="tooltip-platform" style="color: ${efficiencyData.color};">
+          <div class="tooltip-circle" style="background-color: ${efficiencyData.color};"></div>
+          Hours per Week
+        </div>
+        <div class="tooltip-value">${closestPoint.value}h</div>
+        <div class="tooltip-growth">${closestPoint.change} vs previous year</div>
+        <div class="tooltip-year">${closestPoint.year}</div>
+      `;
+      
+      if (window.efficiencyTooltipTimeout) {
+        clearTimeout(window.efficiencyTooltipTimeout);
+      }
+    } else {
+      if (window.efficiencyTooltipTimeout) {
+        clearTimeout(window.efficiencyTooltipTimeout);
+      }
+      window.efficiencyTooltipTimeout = setTimeout(() => {
+        tooltip.style.display = 'none';
+      }, 300);
+    }
+  });
+  
+  canvas.addEventListener('mouseleave', () => {
+    if (window.efficiencyTooltipTimeout) {
+      clearTimeout(window.efficiencyTooltipTimeout);
+    }
+    window.efficiencyTooltipTimeout = setTimeout(() => {
+      tooltip.style.display = 'none';
+    }, 200);
+  });
+}
+
 // Chart drawing function
 function drawChart(canvasId = 'growthChart', tooltipId = 'chartTooltip', chartDataInput = chartData) {
   const chartData = chartDataInput;
@@ -1696,29 +1830,27 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Draw charts after a short delay to ensure canvas is ready
     setTimeout(() => {
-    // First set of charts
+    // First set of charts (Red Bow Music) - all three charts
     drawChart('growthChart', 'chartTooltip', chartData);
     drawRevenueChart('revenueChart', 'revenueTooltip', revenueData);
     drawPieChart('pieChart', 'pieTooltip', pieData);
 
-    // Second set of charts with different colors
-    drawChart('growthChart2', 'chartTooltip2', chartData2);
+    // Second set (repareo) - metrics, revenue chart, and efficiency line chart
     drawRevenueChart('revenueChart2', 'revenueTooltip2', revenueData2);
-    drawPieChart('pieChart2', 'pieTooltip2', pieData2);
+    drawEfficiencyChart('efficiencyChart', 'efficiencyTooltip');
   }, 100);
 
   // Redraw charts on window resize
   window.addEventListener('resize', () => {
     setTimeout(() => {
-      // First set of charts
+      // First set of charts (Red Bow Music) - all three charts
       drawChart('growthChart', 'chartTooltip', chartData);
       drawRevenueChart('revenueChart', 'revenueTooltip', revenueData);
       drawPieChart('pieChart', 'pieTooltip', pieData);
 
-      // Second set of charts with different colors
-      drawChart('growthChart2', 'chartTooltip2', chartData2);
+      // Second set (repareo) - metrics, revenue chart, and efficiency line chart
       drawRevenueChart('revenueChart2', 'revenueTooltip2', revenueData2);
-      drawPieChart('pieChart2', 'pieTooltip2', pieData2);
+      drawEfficiencyChart('efficiencyChart', 'efficiencyTooltip');
     }, 100);
   });
 });
