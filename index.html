@@ -1195,17 +1195,36 @@ function drawPieChart() {
   });
   
 // ⬇️ ADD LEGEND HERE (top)
-let legendX = 30;
+// Responsive top legend
+let legendX = 20;
 let legendY = 20;
+const maxLegendWidth = width - 40; // 20px padding on both sides
+
 segments.forEach((segment, i) => {
+  const labelText = `${segment.label} (${segment.value}%)`;
+  const textWidth = ctx.measureText(labelText).width;
+  const itemWidth = textWidth + 32; // box + spacing
+
+  // Wrap to next line if too wide
+  if (legendX + itemWidth > maxLegendWidth) {
+    legendX = 20;
+    legendY += 24;
+  }
+
+  // Draw color box
   ctx.fillStyle = segment.color;
   ctx.fillRect(legendX, legendY, 12, 12);
+
+  // Draw label text
   ctx.fillStyle = '#fff';
   ctx.font = '12px Manrope, sans-serif';
   ctx.textAlign = 'left';
-  ctx.fillText(`${segment.label} (${segment.value}%)`, legendX + 18, legendY + 10);
-  legendX += ctx.measureText(`${segment.label} (${segment.value}%)`).width + 50;
+  ctx.fillText(labelText, legendX + 18, legendY + 10);
+
+  // Move to next item position
+  legendX += itemWidth;
 });
+
   
   // Mouse hover functionality
   canvas.addEventListener('mousemove', (e) => {
