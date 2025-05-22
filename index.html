@@ -11,6 +11,174 @@
   box-sizing: border-box;
 }
 
+// Pie Chart drawing function
+function drawPieChart() {
+  const canvas = document.getElementById('pieChart');
+  if (!canvas) return;
+  
+  const ctx = canvas.getContext('2d');
+  const tooltip = document.getElementById('pieTooltip');
+  
+  // Set canvas size
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width * window.devicePixelRatio;
+  canvas.height = rect.height * window.devicePixelRatio;
+  ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+  
+  const width = rect.width;
+  const height = rect.height;
+  
+  // Clear canvas
+  ctx.fillStyle = '#0a0a0a';
+  ctx.fillRect(0, 0, width, height);
+  
+  // Calculate center and radius
+  const centerX = width / 2;
+  const centerY = height / 2;
+  const radius = Math.min(width, height) * 0.35; // Outer radius
+  const innerRadius = radius * 0.95; // Massive hole - almost no donut visible (was 0.5, now 0.95)
+  
+  // Calculate angles
+  let currentAngle = -Math.PI / 2; // Start at top
+  const segments = [];
+  
+  pieData.data.forEach((value, i) => {
+    const sliceAngle = (value / 100) * 2 * Math.PI;
+    
+    segments.push({
+      startAngle: currentAngle,
+      endAngle: currentAngle + sliceAngle,
+      value: value,
+      label: pieData.labels[i],
+      color: pieData.colors[i]
+    });
+    
+    currentAngle += sliceAngle;
+  });
+  
+  // Draw segments
+  segments.forEach(segment => {
+    // Draw outer arc
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, radius, segment.startAngle, segment.endAngle);
+    ctx.arc(centerX, centerY, innerRadius, segment.endAngle, segment.startAngle, true);
+    ctx.closePath();
+    ctx.fillStyle = segment.color;
+    ctx.fill();
+  });
+  
+  // Draw legend
+  const legendY = height - 60;
+  let legendX = 30;
+  
+  segments.forEach((segment, i) => {
+    // Legend color box
+    ctx.fillStyle = segment.color;
+    ctx.fillRect(legendX, legendY, 12, 12);
+    
+    // Legend text
+    ctx.fillStyle = '#fff';
+    ctx.font = '12px Manrope, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText(`${segment.label} (${segment.value}%)`, legendX + 18, legendY + 9);
+    
+    legendX += ctx.measureText(`${segment.label} (${segment.value}%)`).width + 40;
+  });
+  
+  // Mouse hover functionality
+  canvas.addEventListener('mousemove', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    
+    // Check if mouse is over any segment
+    const distanceFromCenter = Math.sqrt((mouseX - centerX) ** 2 + (mouseY - centerY) ** 2);
+    
+    if (distanceFromCenter >= innerRadius && distanceFromCenter <= radius) {
+      // Calculate angle from center to mouse
+      const angle = Math.atan2(mouseY - centerY, mouseX - centerX);
+      const normalizedAngle = angle < -Math.PI / 2 ? angle + 2 * Math.PI : angle;
+      
+      // Find which segment the mouse is over
+      const hoveredSegment = segments.find(segment => {
+        let startAngle = segment.startAngle;
+        let endAngle = segment.endAngle;
+        
+        // Normalize angles for comparison
+        if (startAngle < -Math.PI / 2) startAngle += 2 * Math.PI;
+        if (endAngle < -Math.PI / 2) endAngle += 2 * Math.PI;
+        
+        return normalizedAngle >= startAngle && normalizedAngle <= endAngle;
+      });
+      
+      if (hoveredSegment) {
+        const containerRect = canvas.closest('.chart-container').getBoundingClientRect();
+        const relativeX = e.clientX - containerRect.left;
+        const relativeY = e.clientY - containerRect.top;
+        
+        const tooltipWidth = 200;
+        const tooltipHeight = 100;
+        let leftPos = relativeX - 15;
+        let topPos = relativeY - 120;
+        
+        // Keep tooltip within chart container bounds
+        if (leftPos + tooltipWidth > containerRect.width) {
+          leftPos = containerRect.width - tooltipWidth - 10;
+        }
+        if (leftPos < 10) {
+          leftPos = 10;
+        }
+        
+        if (topPos < 10) {
+          topPos = relativeY + 20;
+        }
+        if (topPos + tooltipHeight > containerRect.height) {
+          topPos = containerRect.height - tooltipHeight - 10;
+        }
+        
+        tooltip.style.display = 'block';
+        tooltip.style.left = leftPos + 'px';
+        tooltip.style.top = topPos + 'px';
+        tooltip.innerHTML = `
+          <div class="tooltip-platform" style="color: ${hoveredSegment.color};">
+            <div class="tooltip-circle" style="background-color: ${hoveredSegment.color};"></div>
+            ${hoveredSegment.label}
+          </div>
+          <div class="tooltip-value">${hoveredSegment.value}%</div>
+          <div class="tooltip-growth">Traffic Source</div>
+        `;
+        
+        if (window.pieTooltipTimeout) {
+          clearTimeout(window.pieTooltipTimeout);
+        }
+      } else {
+        if (window.pieTooltipTimeout) {
+          clearTimeout(window.pieTooltipTimeout);
+        }
+        window.pieTooltipTimeout = setTimeout(() => {
+          tooltip.style.display = 'none';
+        }, 300);
+      }
+    } else {
+      if (window.pieTooltipTimeout) {
+        clearTimeout(window.pieTooltipTimeout);
+      }
+      window.pieTooltipTimeout = setTimeout(() => {
+        tooltip.style.display = 'none';
+      }, 300);
+    }
+  });
+  
+  canvas.addEventListener('mouseleave', () => {
+    if (window.pieTooltipTimeout) {
+      clearTimeout(window.pieTooltipTimeout);
+    }
+    window.pieTooltipTimeout = setTimeout(() => {
+      tooltip.style.display = 'none';
+    }, 200);
+  });
+}
+
 /* 2) (Re-)define your container with a border */
 .container {
   /* no more white outline */
@@ -724,71 +892,10 @@ body {
   </div>
 
   <div class="gallery-item scale-in">
-    <img
-      src="https://github.com/sebastianbench/Portfolio/blob/main/images/333udZrBBGrifhaOCPurprSRR7U5I.jpg?raw=true"
-      alt="Gallery Image 3"
-    />
-    <div class="gallery-caption">
-      <p>
-        <span class="bold">Expert CRM.</span><br />
-      </p>
-      <ul>
-        <li>Reliable customer service</li>
-        <li>Email marketing campaigns</li>
-        <li>Whatsapp and such</li>
-      </ul>
+    <div class="chart-container">
+      <canvas class="chart-canvas" id="pieChart"></canvas>
+      <div class="chart-tooltip" id="pieTooltip"></div>
     </div>
-  </div>
-</section>
-
-<!-- PROJECT 2 -->
-<div class="container">
-  <section class="content-section">
-    <div class="left-column slide-in-left">
-      <img src="https://github.com/sebastianbench/Portfolio/blob/main/images/rbm_logov2.png?raw=true" alt="RBM Logo">
-       <p>
-      <span class="bold">Marketing Manager.</span><br>
-      <span class="extralight">
-        Red Bow Music.<br>
-        Bremen, Germany.
-      </span>
-    </p>
-    <ul>
-      <li>Founder of a company.</li>
-      <li>1000 orders in the first year.</li>
-      <li>9000+ orders since.</li>
-    </ul>
-  </div>
-  <div class="right-column slide-in-right">
-    <img src="https://github.com/sebastianbench/Portfolio/blob/main/images/udZrBBGrifhaOCPurprSRR7U5Iimsgauaw.jpg?raw=true"
-         alt="Phone Preview">
-  </div>
-</section>
-</div>
-
-<section class="gallery">
-  <div class="gallery-item scale-in">
-    <img
-      src="https://github.com/sebastianbench/Portfolio/blob/main/images/111udZrBBGrifhaOCPurprSRR7U5I.jpg?raw=true"
-      alt="Gallery Image 1"
-    />
-    <div class="gallery-caption">
-      <p>
-        <span class="bold">Fast Growth.</span><br />
-      </p>
-      <ul>
-        <li>Grew by 100% in the 2nd year</li>
-        <li>Over 2 Mio. likes in the 5th year</li>
-        <li>Completely organic, no ads</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="gallery-item scale-in">
-    <img
-      src="https://github.com/sebastianbench/Portfolio/blob/main/images/222udZrBBGrifhaOCPurprSRR7U5I.jpg?raw=true"
-      alt="Gallery Image 2"
-    />
     <div class="gallery-caption">
       <p>
         <span class="bold">Reliable Results.</span><br />
@@ -797,101 +904,6 @@ body {
         <li>Consistent positive results</li>
         <li>1000+ orders per year</li>
         <li>Slowly increasing income</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="gallery-item scale-in">
-    <img
-      src="https://github.com/sebastianbench/Portfolio/blob/main/images/333udZrBBGrifhaOCPurprSRR7U5I.jpg?raw=true"
-      alt="Gallery Image 3"
-    />
-    <div class="gallery-caption">
-      <p>
-        <span class="bold">Expert CRM.</span><br />
-      </p>
-      <ul>
-        <li>Reliable customer service</li>
-        <li>Email marketing campaigns</li>
-        <li>Whatsapp and such</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- PROJECT 3 -->
-<div class="container">
-  <section class="content-section">
-    <div class="left-column slide-in-left">
-      <img src="https://github.com/sebastianbench/Portfolio/blob/main/images/rbm_logov2.png?raw=true" alt="RBM Logo">
-       <p>
-      <span class="bold">Marketing Manager.</span><br>
-      <span class="extralight">
-        Red Bow Music.<br>
-        Bremen, Germany.
-      </span>
-    </p>
-    <ul>
-      <li>Founder of a company.</li>
-      <li>1000 orders in the first year.</li>
-      <li>9000+ orders since.</li>
-    </ul>
-  </div>
-  <div class="right-column slide-in-right">
-    <img src="https://github.com/sebastianbench/Portfolio/blob/main/images/udZrBBGrifhaOCPurprSRR7U5Iimsgauaw.jpg?raw=true"
-         alt="Phone Preview">
-  </div>
-</section>
-</div>
-
-<section class="gallery">
-  <div class="gallery-item scale-in">
-    <img
-      src="https://github.com/sebastianbench/Portfolio/blob/main/images/111udZrBBGrifhaOCPurprSRR7U5I.jpg?raw=true"
-      alt="Gallery Image 1"
-    />
-    <div class="gallery-caption">
-      <p>
-        <span class="bold">Fast Growth.</span><br />
-      </p>
-      <ul>
-        <li>Grew by 100% in the 2nd year</li>
-        <li>Over 2 Mio. likes in the 5th year</li>
-        <li>Completely organic, no ads</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="gallery-item scale-in">
-    <img
-      src="https://github.com/sebastianbench/Portfolio/blob/main/images/222udZrBBGrifhaOCPurprSRR7U5I.jpg?raw=true"
-      alt="Gallery Image 2"
-    />
-    <div class="gallery-caption">
-      <p>
-        <span class="bold">Reliable Results.</span><br />
-      </p>
-      <ul>
-        <li>Consistent positive results</li>
-        <li>1000+ orders per year</li>
-        <li>Slowly increasing income</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="gallery-item scale-in">
-    <img
-      src="https://github.com/sebastianbench/Portfolio/blob/main/images/333udZrBBGrifhaOCPurprSRR7U5I.jpg?raw=true"
-      alt="Gallery Image 3"
-    />
-    <div class="gallery-caption">
-      <p>
-        <span class="bold">Expert CRM.</span><br />
-      </p>
-      <ul>
-        <li>Reliable customer service</li>
-        <li>Email marketing campaigns</li>
-        <li>Whatsapp and such</li>
       </ul>
     </div>
   </div>
@@ -912,6 +924,13 @@ const observer = new IntersectionObserver((entries) => {
     }
   });
 }, observerOptions);
+
+// Pie Chart Data
+const pieData = {
+  labels: ['Organic Traffic', 'Paid Advertising'],
+  data: [95, 5],
+  colors: ['#880423', '#666666']
+};
 
 // Revenue Chart Data
 const revenueData = {
@@ -943,12 +962,12 @@ const chartData = {
 };
 
 // Revenue Bar Chart drawing function
-function drawRevenueChart() {
-  const canvas = document.getElementById('revenueChart');
+function drawRevenueChart(canvasId = 'revenueChart', tooltipId = 'revenueTooltip') {
+  const canvas = document.getElementById(canvasId);
   if (!canvas) return;
   
   const ctx = canvas.getContext('2d');
-  const tooltip = document.getElementById('revenueTooltip');
+  const tooltip = document.getElementById(tooltipId);
   
   // Set canvas size
   const rect = canvas.getBoundingClientRect();
@@ -1114,28 +1133,200 @@ function drawRevenueChart() {
         <div class="tooltip-year">${hoveredBar.year}</div>
       `;
       
-      if (window.revenueTooltipTimeout) {
-        clearTimeout(window.revenueTooltipTimeout);
+      const timeoutKey = `${canvasId}TooltipTimeout`;
+      if (window[timeoutKey]) {
+        clearTimeout(window[timeoutKey]);
       }
     } else {
-      if (window.revenueTooltipTimeout) {
-        clearTimeout(window.revenueTooltipTimeout);
+      const timeoutKey = `${canvasId}TooltipTimeout`;
+      if (window[timeoutKey]) {
+        clearTimeout(window[timeoutKey]);
       }
-      window.revenueTooltipTimeout = setTimeout(() => {
+      window[timeoutKey] = setTimeout(() => {
         tooltip.style.display = 'none';
       }, 300);
     }
   });
   
   canvas.addEventListener('mouseleave', () => {
-    if (window.revenueTooltipTimeout) {
-      clearTimeout(window.revenueTooltipTimeout);
+    const timeoutKey = `${canvasId}TooltipTimeout`;
+    if (window[timeoutKey]) {
+      clearTimeout(window[timeoutKey]);
     }
-    window.revenueTooltipTimeout = setTimeout(() => {
+    window[timeoutKey] = setTimeout(() => {
       tooltip.style.display = 'none';
     }, 200);
   });
 }
+
+// Pie Chart drawing function
+function drawPieChart() {
+  const canvas = document.getElementById('pieChart');
+  if (!canvas) return;
+  
+  const ctx = canvas.getContext('2d');
+  const tooltip = document.getElementById('pieTooltip');
+  
+  // Set canvas size
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width * window.devicePixelRatio;
+  canvas.height = rect.height * window.devicePixelRatio;
+  ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+  
+  const width = rect.width;
+  const height = rect.height;
+  
+  // Clear canvas
+  ctx.fillStyle = '#0a0a0a';
+  ctx.fillRect(0, 0, width, height);
+  
+  // Calculate center and radius
+  const centerX = width / 2;
+  const centerY = height / 2;
+  const radius = Math.min(width, height) * 0.35; // Outer radius
+  const innerRadius = radius * 0.5; // Inner radius for donut effect
+  
+  // Calculate angles
+  let currentAngle = -Math.PI / 2; // Start at top
+  const segments = [];
+  
+  pieData.data.forEach((value, i) => {
+    const sliceAngle = (value / 100) * 2 * Math.PI;
+    
+    segments.push({
+      startAngle: currentAngle,
+      endAngle: currentAngle + sliceAngle,
+      value: value,
+      label: pieData.labels[i],
+      color: pieData.colors[i]
+    });
+    
+    currentAngle += sliceAngle;
+  });
+  
+  // Draw segments
+  segments.forEach(segment => {
+    // Draw outer arc
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, radius, segment.startAngle, segment.endAngle);
+    ctx.arc(centerX, centerY, innerRadius, segment.endAngle, segment.startAngle, true);
+    ctx.closePath();
+    ctx.fillStyle = segment.color;
+    ctx.fill();
+  });
+  
+  // Draw legend
+  const legendY = height - 60;
+  let legendX = 30;
+  
+  segments.forEach((segment, i) => {
+    // Legend color box
+    ctx.fillStyle = segment.color;
+    ctx.fillRect(legendX, legendY, 12, 12);
+    
+    // Legend text
+    ctx.fillStyle = '#fff';
+    ctx.font = '12px Manrope, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText(`${segment.label} (${segment.value}%)`, legendX + 18, legendY + 9);
+    
+    legendX += ctx.measureText(`${segment.label} (${segment.value}%)`).width + 40;
+  });
+  
+  // Mouse hover functionality
+  canvas.addEventListener('mousemove', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    
+    // Check if mouse is over any segment
+    const distanceFromCenter = Math.sqrt((mouseX - centerX) ** 2 + (mouseY - centerY) ** 2);
+    
+    if (distanceFromCenter >= innerRadius && distanceFromCenter <= radius) {
+      // Calculate angle from center to mouse
+      const angle = Math.atan2(mouseY - centerY, mouseX - centerX);
+      const normalizedAngle = angle < -Math.PI / 2 ? angle + 2 * Math.PI : angle;
+      
+      // Find which segment the mouse is over
+      const hoveredSegment = segments.find(segment => {
+        let startAngle = segment.startAngle;
+        let endAngle = segment.endAngle;
+        
+        // Normalize angles for comparison
+        if (startAngle < -Math.PI / 2) startAngle += 2 * Math.PI;
+        if (endAngle < -Math.PI / 2) endAngle += 2 * Math.PI;
+        
+        return normalizedAngle >= startAngle && normalizedAngle <= endAngle;
+      });
+      
+      if (hoveredSegment) {
+        const containerRect = canvas.closest('.chart-container').getBoundingClientRect();
+        const relativeX = e.clientX - containerRect.left;
+        const relativeY = e.clientY - containerRect.top;
+        
+        const tooltipWidth = 200;
+        const tooltipHeight = 100;
+        let leftPos = relativeX - 15;
+        let topPos = relativeY - 120;
+        
+        // Keep tooltip within chart container bounds
+        if (leftPos + tooltipWidth > containerRect.width) {
+          leftPos = containerRect.width - tooltipWidth - 10;
+        }
+        if (leftPos < 10) {
+          leftPos = 10;
+        }
+        
+        if (topPos < 10) {
+          topPos = relativeY + 20;
+        }
+        if (topPos + tooltipHeight > containerRect.height) {
+          topPos = containerRect.height - tooltipHeight - 10;
+        }
+        
+        tooltip.style.display = 'block';
+        tooltip.style.left = leftPos + 'px';
+        tooltip.style.top = topPos + 'px';
+        tooltip.innerHTML = `
+          <div class="tooltip-platform" style="color: ${hoveredSegment.color};">
+            <div class="tooltip-circle" style="background-color: ${hoveredSegment.color};"></div>
+            ${hoveredSegment.label}
+          </div>
+          <div class="tooltip-value">${hoveredSegment.value}%</div>
+          <div class="tooltip-growth">Traffic Source</div>
+        `;
+        
+        if (window.pieTooltipTimeout) {
+          clearTimeout(window.pieTooltipTimeout);
+        }
+      } else {
+        if (window.pieTooltipTimeout) {
+          clearTimeout(window.pieTooltipTimeout);
+        }
+        window.pieTooltipTimeout = setTimeout(() => {
+          tooltip.style.display = 'none';
+        }, 300);
+      }
+    } else {
+      if (window.pieTooltipTimeout) {
+        clearTimeout(window.pieTooltipTimeout);
+      }
+      window.pieTooltipTimeout = setTimeout(() => {
+        tooltip.style.display = 'none';
+      }, 300);
+    }
+  });
+  
+  canvas.addEventListener('mouseleave', () => {
+    if (window.pieTooltipTimeout) {
+      clearTimeout(window.pieTooltipTimeout);
+    }
+    window.pieTooltipTimeout = setTimeout(() => {
+      tooltip.style.display = 'none';
+    }, 200);
+  });
+}
+
 // Chart drawing function
 function drawChart() {
   const canvas = document.getElementById('growthChart');
@@ -1386,14 +1577,16 @@ document.addEventListener('DOMContentLoaded', () => {
   // Draw charts after a short delay to ensure canvas is ready
   setTimeout(() => {
     drawChart();
-    drawRevenueChart();
+    drawRevenueChart('revenueChart', 'revenueTooltip');
+    drawPieChart();
   }, 100);
   
   // Redraw charts on window resize
   window.addEventListener('resize', () => {
     setTimeout(() => {
       drawChart();
-      drawRevenueChart();
+      drawRevenueChart('revenueChart', 'revenueTooltip');
+      drawPieChart();
     }, 100);
   });
 });
