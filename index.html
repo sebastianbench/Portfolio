@@ -1073,8 +1073,8 @@ const efficiencyData = {
 };
 
   const efficiencyData3 = {
-  labels: ["'23", "'24", "'25"],
-  data: [17, 10, 4],
+  labels: ["'21", "'22", "'23"],
+  data: [10000, 600000, 900000],
   color: '#dff236',
   fillColor: 'rgba(223, 242, 54, 0.2)' // lighter yellow-green
 };
@@ -1701,7 +1701,9 @@ function drawEfficiencyChart(canvasId = 'efficiencyChart', tooltipId = 'efficien
   const chartWidth = width - margin.left - margin.right;
   const chartHeight = height - margin.top - margin.bottom;
 
-  const scale = chartHeight / 20;
+  const maxValue = 1000000;
+const scale = chartHeight / maxValue;
+
 
   ctx.fillStyle = '#0a0a0a';
   ctx.fillRect(0, 0, width, height);
@@ -1718,13 +1720,14 @@ function drawEfficiencyChart(canvasId = 'efficiencyChart', tooltipId = 'efficien
   ctx.stroke();
 
   for (let i = 0; i <= 5; i++) {
-    const y = margin.top + (chartHeight * i / 5);
-    const value = Math.round(20 * (5 - i) / 5);
-    ctx.fillStyle = '#888';
-    ctx.font = '12px Manrope, sans-serif';
-    ctx.textAlign = 'right';
-    ctx.fillText(value + 'h', margin.left - 10, y + 4);
-  }
+  const y = margin.top + (chartHeight * i / 5);
+  const value = Math.round(1000000 * (5 - i) / 5); // from 1M down to 0
+  ctx.fillStyle = '#888';
+  ctx.font = '12px Manrope, sans-serif';
+  ctx.textAlign = 'right';
+  const label = value >= 1000000 ? (value / 1000000) + 'M' : (value / 1000) + 'k';
+  ctx.fillText(label, margin.left - 10, y + 4);
+}
 
   for (let i = 0; i < efficiencyData3.labels.length; i++) {
     const x = margin.left + (chartWidth * i / (efficiencyData3.labels.length - 1));
