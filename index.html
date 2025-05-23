@@ -743,8 +743,9 @@ body {
 }
 
 .custom-button.grey {
-  background-color: #444;
+  background-color: #111; /* same as your site's background */
   color: #fff;
+  border: 1px solid #333; /* optional: subtle outline */
 }
 
 .custom-button.grey:hover {
@@ -2410,7 +2411,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
 </script>
  <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem; padding: 3rem 0;">
-  <a href="mailto:your@email.com" class="cta">Contact</a>
+  <!-- Contact Button with image above -->
+<div style="text-align: center; margin: 4rem 0;">
+  <img src="https://github.com/sebastianbench/Portfolio/blob/main/images/Cover%20image%20CV4.png?raw=true" alt="Contact Icon" style="max-width: 80px; margin-bottom: 1rem; border-radius: 50%;" />
+
+  <a href="mailto:your@email.com" class="cta" style="padding: 0.8rem 2rem; font-size: 16px;">Contact</a>
+</div>
+
 
   <details class="reference-toggle">
     <summary class="custom-button grey">Privacy Policy</summary>
