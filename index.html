@@ -761,6 +761,41 @@ body {
 }
 
 
+    .reference-toggle {
+  margin-top: 1.5rem;
+  border-radius: 8px;
+  background-color: #000;
+  padding: 0;
+  overflow: hidden;
+}
+
+.reference-toggle summary {
+  cursor: pointer;
+  list-style: none;
+  background: #fff;
+  color: #111;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  font-family: 'Manrope', sans-serif;
+  text-align: left;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.reference-toggle summary:hover {
+  background: #eee;
+}
+
+.reference-text {
+  padding: 1rem;
+  color: #ccc;
+  background-color: #000;
+  border-top: 1px solid #333;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+
     
   </style>
 </head>
@@ -887,10 +922,16 @@ body {
       <li>Founder of a company.</li>
       <li>1000 orders in the first year.</li>
       <li>9000+ orders since.</li>
-    </ul>
-<div style="margin-top: 1rem; padding-left: 0;">
-  <a href="https://your-repareo-reference.com" class="cta">See reference</a>
-</div>
+  </ul>
+<details class="reference-toggle">
+  <summary class="cta">See reference</summary>
+  <div class="reference-text">
+    <p>
+      During my time at Repareo GmbH, I supported CRM activities including newsletter segmentation, campaign automation, and retention analysis. I was praised for my initiative, technical skills, and proactive collaboration across departments.
+    </p>
+  </div>
+</details>
+
 
   </div>
   <div class="right-column slide-in-right">
