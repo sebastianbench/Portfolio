@@ -807,6 +807,24 @@ body {
   transform: rotate(90deg); /* Rotate when open */
 }
 
+.custom-button.grey {
+  background-color: #444;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  font-family: 'Manrope', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  text-align: center;
+  display: inline-block;
+  transition: background 0.2s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.custom-button.grey:hover {
+  background-color: #666;
+}
 
     
   </style>
@@ -2392,23 +2410,24 @@ document.addEventListener('DOMContentLoaded', () => {
   
 
 </script>
-  <div style="text-align: center; margin: 4rem 0;">
-  <!-- Contact Button -->
-  <a href="#contact" class="cta" style="margin: 0 0.5rem;">Contact</a>
+ <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem; padding: 3rem 0;">
+  <a href="mailto:your@email.com" class="cta">Contact</a>
 
- <details class="reference-toggle">
-  <summary class="custom-button grey">Privacy Policy</summary>
-  <div class="reference-text">
-    Your privacy policy text goes here...
-  </div>
-</details>
+  <details class="reference-toggle">
+    <summary class="custom-button grey">Privacy Policy</summary>
+    <div class="reference-text">
+      Your privacy policy text goes here...
+    </div>
+  </details>
 
-<details class="reference-toggle">
-  <summary class="custom-button grey">Impressum</summary>
-  <div class="reference-text">
-    Your impressum text goes here...
-  </div>
-</details>
+  <details class="reference-toggle">
+    <summary class="custom-button grey">Impressum</summary>
+    <div class="reference-text">
+      Your impressum text goes here...
+    </div>
+  </details>
+</div>
+
 
 
 </body>
