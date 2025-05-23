@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sebastian Echavarria</title>
+
   <style>
 
     /* 1) Make every element use border-box so borders don't add to width */
@@ -708,6 +709,37 @@ body {
   margin-bottom: 3rem;
 }
 
+    .custom-button {
+  display: inline-block;
+  padding: 10px 20px;
+  margin-top: 1.5rem;
+  border-radius: 999px; /* pill shape */
+  font-family: 'Manrope', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.custom-button.grey {
+  background-color: #444;
+  color: #fff;
+}
+
+.custom-button.grey:hover {
+  background-color: #666;
+}
+
+.custom-button.white {
+  background-color: #fff;
+  color: #111;
+}
+
+.custom-button.white:hover {
+  background-color: #eee;
+}
+
 
     
   </style>
@@ -750,6 +782,7 @@ body {
       <li>Founder of a company.</li>
       <li>1000 orders in the first year.</li>
       <li>9000+ orders since.</li>
+      <a href="https://your-redbow-url.com" class="custom-button grey">See website</a>
     </ul>
   </div>
   <div class="right-column slide-in-right">
@@ -829,6 +862,7 @@ body {
       <li>Founder of a company.</li>
       <li>1000 orders in the first year.</li>
       <li>9000+ orders since.</li>
+      <a href="#" class="custom-button white">See reference</a>
     </ul>
   </div>
   <div class="right-column slide-in-right">
@@ -914,6 +948,7 @@ body {
       <li>Founder of a company.</li>
       <li>1000 orders in the first year.</li>
       <li>9000+ orders since.</li>
+      <a href="#" class="custom-button white">See reference</a>
     </ul>
   </div>
   <div class="right-column slide-in-right">
