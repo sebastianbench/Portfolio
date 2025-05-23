@@ -795,10 +795,18 @@ body {
   line-height: 1.6;
 }
 
-.reference-toggle summary::marker {
-  display: inline; /* Make sure it's visible */
-  font-size: 16px;
+.reference-toggle summary::before {
+  content: "▶";
+  display: inline-block;
+  margin-right: 0.5rem;
+  transform: rotate(0deg);
+  transition: transform 0.2s ease;
 }
+
+.reference-toggle[open] summary::before {
+  transform: rotate(90deg); /* Rotate when open */
+}
+
 
     
   </style>
