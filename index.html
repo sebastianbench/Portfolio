@@ -2076,8 +2076,9 @@ document.addEventListener('DOMContentLoaded', () => {
     drawRevenueChart('revenueChart2', 'revenueTooltip2', revenueData2);
     drawEfficiencyChart('efficiencyChart', 'efficiencyTooltip');
 
-    // ✅ Third section (Everjump) — new chart
+    // ✅ Third section (Everjump) — both charts
     drawEfficiencyChart3();
+    drawRevenueChart3();
   }, 100);
 
   // Redraw charts on window resize
@@ -2090,12 +2091,13 @@ document.addEventListener('DOMContentLoaded', () => {
       drawRevenueChart('revenueChart2', 'revenueTooltip2', revenueData2);
       drawEfficiencyChart('efficiencyChart', 'efficiencyTooltip');
 
-         // ✅ Third section (Everjump) — new charts
-    drawEfficiencyChart3();
-    drawRevenueChart3();
+      // ✅ Third section (Everjump) — re-draw both on resize
+      drawEfficiencyChart3();
+      drawRevenueChart3();
     }, 100);
   });
 });
+
 </script>
   
 </body>
