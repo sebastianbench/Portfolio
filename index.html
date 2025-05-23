@@ -979,8 +979,11 @@ body {
 <section class="gallery">
   <div class="gallery-item scale-in">
     <div class="chart-container">
-      <!-- Placeholder for future chart -->
-    </div>
+  <canvas class="chart-canvas" id="efficiencyChart3"></canvas>
+  <div class="chart-tooltip" id="efficiencyTooltip3"></div>
+</div>
+
+
     <div class="gallery-caption">
       <p>
         <span class="bold">Gallery Item 1.</span><br />
@@ -1112,6 +1115,12 @@ const efficiencyData = {
   fillColor: 'rgba(50, 139, 239, 0.3)' // Light blue with transparency
 };
 
+  const efficiencyData3 = {
+  labels: ["'23", "'24", "'25"],
+  data: [17, 10, 4],
+  color: '#dff236',
+  fillColor: 'rgba(223, 242, 54, 0.2)' // lighter yellow-green
+};
 
 // Revenue Bar Chart drawing function
 function drawRevenueChart(canvasId = 'revenueChart', tooltipId = 'revenueTooltip', revenueDataInput = revenueData) {
@@ -1712,6 +1721,86 @@ function drawEfficiencyChart(canvasId = 'efficiencyChart', tooltipId = 'efficien
   });
 }
 
+  function drawEfficiencyChart3(canvasId = 'efficiencyChart3', tooltipId = 'efficiencyTooltip3') {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+
+  const ctx = canvas.getContext('2d');
+  const tooltip = document.getElementById(tooltipId);
+
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width * window.devicePixelRatio;
+  canvas.height = rect.height * window.devicePixelRatio;
+  ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+
+  const width = rect.width;
+  const height = rect.height;
+  const margin = { top: 40, right: 20, bottom: 60, left: 60 };
+  const chartWidth = width - margin.left - margin.right;
+  const chartHeight = height - margin.top - margin.bottom;
+
+  const scale = chartHeight / 20;
+
+  ctx.fillStyle = '#0a0a0a';
+  ctx.fillRect(0, 0, width, height);
+
+  ctx.strokeStyle = '#666';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(margin.left, margin.top);
+  ctx.lineTo(margin.left, margin.top + chartHeight);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(margin.left, margin.top + chartHeight);
+  ctx.lineTo(margin.left + chartWidth, margin.top + chartHeight);
+  ctx.stroke();
+
+  for (let i = 0; i <= 5; i++) {
+    const y = margin.top + (chartHeight * i / 5);
+    const value = Math.round(20 * (5 - i) / 5);
+    ctx.fillStyle = '#888';
+    ctx.font = '12px Manrope, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText(value + 'h', margin.left - 10, y + 4);
+  }
+
+  for (let i = 0; i < efficiencyData3.labels.length; i++) {
+    const x = margin.left + (chartWidth * i / (efficiencyData3.labels.length - 1));
+    ctx.fillStyle = '#888';
+    ctx.font = '12px Manrope, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(efficiencyData3.labels[i], x, height - margin.bottom + 20);
+  }
+
+  const points = efficiencyData3.data.map((value, i) => {
+    const x = margin.left + (chartWidth * i / (efficiencyData3.data.length - 1));
+    const y = margin.top + chartHeight - (value * scale);
+    return { x, y, value, label: efficiencyData3.labels[i] };
+  });
+
+  ctx.beginPath();
+  ctx.moveTo(margin.left, margin.top + chartHeight);
+  points.forEach(p => ctx.lineTo(p.x, p.y));
+  ctx.lineTo(margin.left + chartWidth, margin.top + chartHeight);
+  ctx.closePath();
+  ctx.fillStyle = efficiencyData3.fillColor;
+  ctx.fill();
+
+  ctx.strokeStyle = efficiencyData3.color;
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  points.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
+  ctx.stroke();
+
+  ctx.fillStyle = efficiencyData3.color;
+  points.forEach(p => {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 4, 0, 2 * Math.PI);
+    ctx.fill();
+  });
+}
+
+
 // Chart drawing function
 function drawChart(canvasId = 'growthChart', tooltipId = 'chartTooltip', chartDataInput = chartData) {
   const chartData = chartDataInput;
@@ -1964,7 +2053,7 @@ document.addEventListener('DOMContentLoaded', () => {
   animatedElements.forEach(el => observer.observe(el));
   
   // Draw charts after a short delay to ensure canvas is ready
-    setTimeout(() => {
+  setTimeout(() => {
     // First set of charts (Red Bow Music) - all three charts
     drawChart('growthChart', 'chartTooltip', chartData);
     drawRevenueChart('revenueChart', 'revenueTooltip', revenueData);
@@ -1973,19 +2062,23 @@ document.addEventListener('DOMContentLoaded', () => {
     // Second set (repareo) - metrics, revenue chart, and efficiency line chart
     drawRevenueChart('revenueChart2', 'revenueTooltip2', revenueData2);
     drawEfficiencyChart('efficiencyChart', 'efficiencyTooltip');
+
+    // ✅ Third section (Everjump) — new chart
+    drawEfficiencyChart3();
   }, 100);
 
   // Redraw charts on window resize
   window.addEventListener('resize', () => {
     setTimeout(() => {
-      // First set of charts (Red Bow Music) - all three charts
       drawChart('growthChart', 'chartTooltip', chartData);
       drawRevenueChart('revenueChart', 'revenueTooltip', revenueData);
       drawPieChart('pieChart', 'pieTooltip', pieData);
 
-      // Second set (repareo) - metrics, revenue chart, and efficiency line chart
       drawRevenueChart('revenueChart2', 'revenueTooltip2', revenueData2);
       drawEfficiencyChart('efficiencyChart', 'efficiencyTooltip');
+
+      // ✅ Re-draw third chart on resize too
+      drawEfficiencyChart3();
     }, 100);
   });
 });
