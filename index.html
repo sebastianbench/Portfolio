@@ -998,8 +998,10 @@ body {
 
   <div class="gallery-item scale-in">
     <div class="chart-container">
-      <!-- Placeholder for future chart -->
-    </div>
+  <canvas class="chart-canvas" id="revenueChart3"></canvas>
+  <div class="chart-tooltip" id="revenueTooltip3"></div>
+</div>
+
     <div class="gallery-caption">
       <p>
         <span class="bold">Gallery Item 2.</span><br />
@@ -1108,6 +1110,12 @@ const revenueData2 = {
   colors: ['#0064d3', '#0064d3', '#328bef']
 };
 
+  const revenueData3 = {
+  labels: ["'23", "'24", "'25"],
+  data: [26, 32, 35],
+  colors: ['#0064d3', '#0064d3', '#328bef']  // You can change these later
+};
+  
 const efficiencyData = {
   labels: ["'23", "'24", "'25"],
   data: [17, 10, 4],
@@ -1323,6 +1331,11 @@ function drawRevenueChart(canvasId = 'revenueChart', tooltipId = 'revenueTooltip
     }, 200);
   });
 }
+
+  function drawRevenueChart3() {
+  drawRevenueChart('revenueChart3', 'revenueTooltip3', revenueData3);
+}
+
 
 // Pie Chart drawing function
 function drawPieChart(canvasId = 'pieChart', tooltipId = 'pieTooltip', pieDataInput = pieData) {
@@ -2079,6 +2092,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // ✅ Re-draw third chart on resize too
       drawEfficiencyChart3();
+       drawRevenueChart3();
     }, 100);
   });
 });
