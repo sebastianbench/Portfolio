@@ -1304,7 +1304,7 @@ function drawRevenueChart(canvasId = 'revenueChart', tooltipId = 'revenueTooltip
       tooltip.style.display = 'block';
       tooltip.style.left = leftPos + 'px';
       tooltip.style.top = topPos + 'px';
-      tooltip.innerHTML = 
+      tooltip.innerHTML = `
         <div class="tooltip-platform" style="color: ${hoveredBar.color};">
           <div class="tooltip-circle" style="background-color: ${hoveredBar.color};"></div>
           Revenue
@@ -1312,14 +1312,14 @@ function drawRevenueChart(canvasId = 'revenueChart', tooltipId = 'revenueTooltip
         <div class="tooltip-value">${hoveredBar.formattedValue}</div>
         <div class="tooltip-growth">+${hoveredBar.growth}% vs previous year</div>
         <div class="tooltip-year">${hoveredBar.year}</div>
-      ;
+      `;
       
-      const timeoutKey = ${canvasId}TooltipTimeout;
+      const timeoutKey = `${canvasId}TooltipTimeout`;
       if (window[timeoutKey]) {
         clearTimeout(window[timeoutKey]);
       }
     } else {
-      const timeoutKey = ${canvasId}TooltipTimeout;
+      const timeoutKey = `${canvasId}TooltipTimeout`;
       if (window[timeoutKey]) {
         clearTimeout(window[timeoutKey]);
       }
@@ -1330,7 +1330,7 @@ function drawRevenueChart(canvasId = 'revenueChart', tooltipId = 'revenueTooltip
   });
   
   canvas.addEventListener('mouseleave', () => {
-    const timeoutKey = ${canvasId}TooltipTimeout;
+    const timeoutKey = `${canvasId}TooltipTimeout`;
     if (window[timeoutKey]) {
       clearTimeout(window[timeoutKey]);
     }
@@ -1488,21 +1488,21 @@ segments.forEach((segment, i) => {
         tooltip.style.display = 'block';
         tooltip.style.left = leftPos + 'px';
         tooltip.style.top = topPos + 'px';
-        tooltip.innerHTML = 
+        tooltip.innerHTML = `
           <div class="tooltip-platform" style="color: ${hoveredSegment.color};">
             <div class="tooltip-circle" style="background-color: ${hoveredSegment.color};"></div>
             ${hoveredSegment.label}
           </div>
           <div class="tooltip-value">${hoveredSegment.value}%</div>
           <div class="tooltip-growth">Traffic Source</div>
-        ;
+        `;
         
-        const timeoutKey = ${canvasId}TooltipTimeout;
+        const timeoutKey = `${canvasId}TooltipTimeout`;
         if (window[timeoutKey]) {
           clearTimeout(window[timeoutKey]);
         }
       } else {
-        const timeoutKey = ${canvasId}TooltipTimeout;
+        const timeoutKey = `${canvasId}TooltipTimeout`;
         if (window[timeoutKey]) {
           clearTimeout(window[timeoutKey]);
         }
@@ -1511,7 +1511,7 @@ segments.forEach((segment, i) => {
         }, 300);
       }
     } else {
-      const timeoutKey = ${canvasId}TooltipTimeout;
+      const timeoutKey = `${canvasId}TooltipTimeout`;
       if (window[timeoutKey]) {
         clearTimeout(window[timeoutKey]);
       }
@@ -1522,7 +1522,7 @@ segments.forEach((segment, i) => {
   });
   
   canvas.addEventListener('mouseleave', () => {
-    const timeoutKey = ${canvasId}TooltipTimeout;
+    const timeoutKey = `${canvasId}TooltipTimeout`;
     if (window[timeoutKey]) {
       clearTimeout(window[timeoutKey]);
     }
@@ -1669,7 +1669,7 @@ function drawEfficiencyChart(canvasId = 'efficiencyChart', tooltipId = 'efficien
         closestDistance = distance;
         const prevValue = i > 0 ? efficiencyData.data[i-1] : efficiencyData.data[i];
         const changePercent = i > 0 ? (((point.value - prevValue) / prevValue) * 100).toFixed(1) : 0;
-        const changeText = changePercent < 0 ? ${changePercent}% : +${changePercent}%;
+        const changeText = changePercent < 0 ? `${changePercent}%` : `+${changePercent}%`;
         
         closestPoint = {
           year: point.label,
@@ -1709,7 +1709,7 @@ function drawEfficiencyChart(canvasId = 'efficiencyChart', tooltipId = 'efficien
       tooltip.style.display = 'block';
       tooltip.style.left = leftPos + 'px';
       tooltip.style.top = topPos + 'px';
-      tooltip.innerHTML = 
+      tooltip.innerHTML = `
         <div class="tooltip-platform" style="color: ${efficiencyData.color};">
           <div class="tooltip-circle" style="background-color: ${efficiencyData.color};"></div>
           Hours per Week
@@ -1717,7 +1717,7 @@ function drawEfficiencyChart(canvasId = 'efficiencyChart', tooltipId = 'efficien
         <div class="tooltip-value">${closestPoint.value}h</div>
         <div class="tooltip-growth">${closestPoint.change} vs previous year</div>
         <div class="tooltip-year">${closestPoint.year}</div>
-      ;
+      `;
       
       if (window.efficiencyTooltipTimeout) {
         clearTimeout(window.efficiencyTooltipTimeout);
@@ -1834,7 +1834,7 @@ function drawEfficiencyChart(canvasId = 'efficiencyChart', tooltipId = 'efficien
       closestDistance = distance;
       const prevValue = i > 0 ? efficiencyData3.data[i-1] : efficiencyData3.data[i];
       const changePercent = i > 0 ? (((point.value - prevValue) / prevValue) * 100).toFixed(1) : 0;
-      const changeText = changePercent < 0 ? ${changePercent}% : +${changePercent}%;
+      const changeText = changePercent < 0 ? `${changePercent}%` : `+${changePercent}%`;
 
       closestPoint = {
         year: point.label,
@@ -1865,7 +1865,7 @@ function drawEfficiencyChart(canvasId = 'efficiencyChart', tooltipId = 'efficien
     tooltip.style.display = 'block';
     tooltip.style.left = leftPos + 'px';
     tooltip.style.top = topPos + 'px';
-    tooltip.innerHTML = 
+    tooltip.innerHTML = `
       <div class="tooltip-platform" style="color: ${efficiencyData3.color};">
         <div class="tooltip-circle" style="background-color: ${efficiencyData3.color};"></div>
         Views
@@ -1873,7 +1873,7 @@ function drawEfficiencyChart(canvasId = 'efficiencyChart', tooltipId = 'efficien
       <div class="tooltip-value">${closestPoint.value.toLocaleString()} views</div>
       <div class="tooltip-growth">${closestPoint.change} vs previous year</div>
       <div class="tooltip-year">${closestPoint.year}</div>
-    ;
+    `;
 
     if (window.efficiencyTooltip3Timeout) clearTimeout(window.efficiencyTooltip3Timeout);
   } else {
@@ -1904,7 +1904,7 @@ canvas.addEventListener('mousemove', (e) => {
       closestDistance = distance;
       const prevValue = i > 0 ? efficiencyData3.data[i-1] : efficiencyData3.data[i];
       const changePercent = i > 0 ? (((point.value - prevValue) / prevValue) * 100).toFixed(1) : 0;
-      const changeText = changePercent < 0 ? ${changePercent}% : +${changePercent}%;
+      const changeText = changePercent < 0 ? `${changePercent}%` : `+${changePercent}%`;
 
       closestPoint = {
         year: point.label,
@@ -1935,7 +1935,7 @@ canvas.addEventListener('mousemove', (e) => {
     tooltip.style.display = 'block';
     tooltip.style.left = leftPos + 'px';
     tooltip.style.top = topPos + 'px';
-    tooltip.innerHTML = 
+    tooltip.innerHTML = `
       <div class="tooltip-platform" style="color: ${efficiencyData3.color};">
         <div class="tooltip-circle" style="background-color: ${efficiencyData3.color};"></div>
         Views
@@ -1943,7 +1943,7 @@ canvas.addEventListener('mousemove', (e) => {
       <div class="tooltip-value">${closestPoint.value.toLocaleString()} views</div>
       <div class="tooltip-growth">${closestPoint.change} vs previous year</div>
       <div class="tooltip-year">${closestPoint.year}</div>
-    ;
+    `;
 
     if (window.efficiencyTooltip3Timeout) clearTimeout(window.efficiencyTooltip3Timeout);
   } else {
@@ -2170,7 +2170,7 @@ function drawChart(canvasId = 'growthChart', tooltipId = 'chartTooltip', chartDa
       
       tooltip.style.left = leftPos + 'px';
       tooltip.style.top = topPos + 'px';
-      tooltip.innerHTML = 
+      tooltip.innerHTML = `
         <div class="tooltip-platform" style="color: ${closestPoint.color};">
           <div class="tooltip-circle" style="background-color: ${closestPoint.color};"></div>
           ${closestPoint.dataset}
@@ -2178,16 +2178,16 @@ function drawChart(canvasId = 'growthChart', tooltipId = 'chartTooltip', chartDa
         <div class="tooltip-value">${closestPoint.formattedValue}</div>
         <div class="tooltip-growth">+${closestPoint.growth}% vs previous year</div>
         <div class="tooltip-year">${closestPoint.year}</div>
-      ;
+      `;
       
       // Clear any existing timeout
-      const timeoutKey = ${canvasId}TooltipTimeout;
+      const timeoutKey = `${canvasId}TooltipTimeout`;
       if (window[timeoutKey]) {
         clearTimeout(window[timeoutKey]);
       }
     } else {
       // Longer delay before hiding to prevent flickering
-      const timeoutKey = ${canvasId}TooltipTimeout;
+      const timeoutKey = `${canvasId}TooltipTimeout`;
       if (window[timeoutKey]) {
         clearTimeout(window[timeoutKey]);
       }
@@ -2199,7 +2199,7 @@ function drawChart(canvasId = 'growthChart', tooltipId = 'chartTooltip', chartDa
   
   // Only hide immediately when mouse leaves canvas completely
   canvas.addEventListener('mouseleave', () => {
-    const timeoutKey = ${canvasId}TooltipTimeout;
+    const timeoutKey = `${canvasId}TooltipTimeout`;
     if (window[timeoutKey]) {
       clearTimeout(window[timeoutKey]);
     }
