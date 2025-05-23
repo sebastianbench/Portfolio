@@ -1882,6 +1882,76 @@ canvas.addEventListener('mouseleave', () => {
     document.getElementById('efficiencyTooltip3').style.display = 'none';
   }, 200);
 });
+canvas.addEventListener('mousemove', (e) => {
+  const rect = canvas.getBoundingClientRect();
+  const mouseX = e.clientX - rect.left;
+  const mouseY = e.clientY - rect.top;
+
+  let closestDistance = Infinity;
+  let closestPoint = null;
+
+  points.forEach((point, i) => {
+    const distance = Math.sqrt((mouseX - point.x) ** 2 + (mouseY - point.y) ** 2);
+    if (distance < 40 && distance < closestDistance) {
+      closestDistance = distance;
+      const prevValue = i > 0 ? efficiencyData3.data[i-1] : efficiencyData3.data[i];
+      const changePercent = i > 0 ? (((point.value - prevValue) / prevValue) * 100).toFixed(1) : 0;
+      const changeText = changePercent < 0 ? `${changePercent}%` : `+${changePercent}%`;
+
+      closestPoint = {
+        year: point.label,
+        value: point.value,
+        change: changeText,
+        x: e.clientX,
+        y: e.clientY
+      };
+    }
+  });
+
+  if (closestPoint) {
+    const containerRect = canvas.closest('.chart-container').getBoundingClientRect();
+    const relativeX = closestPoint.x - containerRect.left;
+    const relativeY = closestPoint.y - containerRect.top;
+
+    const tooltip = document.getElementById('efficiencyTooltip3');
+    const tooltipWidth = 200;
+    const tooltipHeight = 120;
+    let leftPos = relativeX - 15;
+    let topPos = relativeY - 140;
+
+    if (leftPos + tooltipWidth > containerRect.width) leftPos = containerRect.width - tooltipWidth - 10;
+    if (leftPos < 10) leftPos = 10;
+    if (topPos < 10) topPos = relativeY + 20;
+    if (topPos + tooltipHeight > containerRect.height) topPos = containerRect.height - tooltipHeight - 10;
+
+    tooltip.style.display = 'block';
+    tooltip.style.left = leftPos + 'px';
+    tooltip.style.top = topPos + 'px';
+    tooltip.innerHTML = `
+      <div class="tooltip-platform" style="color: ${efficiencyData3.color};">
+        <div class="tooltip-circle" style="background-color: ${efficiencyData3.color};"></div>
+        Views
+      </div>
+      <div class="tooltip-value">${closestPoint.value.toLocaleString()} views</div>
+      <div class="tooltip-growth">${closestPoint.change} vs previous year</div>
+      <div class="tooltip-year">${closestPoint.year}</div>
+    `;
+
+    if (window.efficiencyTooltip3Timeout) clearTimeout(window.efficiencyTooltip3Timeout);
+  } else {
+    if (window.efficiencyTooltip3Timeout) clearTimeout(window.efficiencyTooltip3Timeout);
+    window.efficiencyTooltip3Timeout = setTimeout(() => {
+      document.getElementById('efficiencyTooltip3').style.display = 'none';
+    }, 300);
+  }
+});
+
+canvas.addEventListener('mouseleave', () => {
+  if (window.efficiencyTooltip3Timeout) clearTimeout(window.efficiencyTooltip3Timeout);
+  window.efficiencyTooltip3Timeout = setTimeout(() => {
+    document.getElementById('efficiencyTooltip3').style.display = 'none';
+  }, 200);
+});
 
 }
 
