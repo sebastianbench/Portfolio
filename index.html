@@ -838,18 +838,18 @@ body {
 }
 
     .detail-section {
+  display: none !important; /* Hide all detail sections by default */
   background: #111;
   color: #fff;
   padding: 2rem 1rem;
   max-width: 1200px;
   margin: 0 auto;
-  display: none;
   flex-direction: column;
   align-items: center;
 }
 
 .detail-section.active {
-  display: flex;
+  display: flex !important; /* Only show the one with .active */
 }
 
 .detail-image {
