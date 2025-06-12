@@ -2428,41 +2428,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-  function scrollToTop() {
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function handleHashChange() {
-  // Hide all detail sections
-  document.querySelectorAll('.detail-section').forEach(section => {
-    section.classList.remove('active');
-  });
-
-  // Get the current hash
-  const hash = window.location.hash;
-
-  // Show the matching detail section
-  if (hash && document.querySelector(hash)) {
-    document.querySelector(hash).classList.add('active');
-
-    // Hide all galleries
-    document.querySelectorAll('.gallery').forEach(gallery => {
-      gallery.style.display = 'none';
-    });
-  } else {
-    // Show galleries again if no hash
-    document.querySelectorAll('.gallery').forEach(gallery => {
-      gallery.style.display = '';
-    });
-  }
-}
-
-// Run on hash change
-window.addEventListener('hashchange', handleHashChange);
-
-// Run on initial load
-window.addEventListener('DOMContentLoaded', handleHashChange);
-
+  
 
 </script>
 
