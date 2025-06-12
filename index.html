@@ -1474,7 +1474,7 @@ function drawRevenueChart(canvasId = 'revenueChart', tooltipId = 'revenueTooltip
           Revenue
         </div>
         <div class="tooltip-value">${hoveredBar.formattedValue}</div>
-        <div class="tooltip-growth">+${hoveredBar.growth}% vs previous year</div>
+        <div class="tooltip-growth">+${hoveredBar.growth}% vs. Vorjahr</div>
         <div class="tooltip-year">${hoveredBar.year}</div>
       `;
       
@@ -1879,7 +1879,7 @@ function drawEfficiencyChart(canvasId = 'efficiencyChart', tooltipId = 'efficien
           Hours per Week
         </div>
         <div class="tooltip-value">${closestPoint.value}h</div>
-        <div class="tooltip-growth">${closestPoint.change} vs previous year</div>
+        <div class="tooltip-growth">${closestPoint.change} vs. Vorjahr</div>
         <div class="tooltip-year">${closestPoint.year}</div>
       `;
       
@@ -2038,7 +2038,7 @@ const scale = chartHeight / maxValue;
         Views
       </div>
       <div class="tooltip-value">${closestPoint.value.toLocaleString()} views</div>
-      <div class="tooltip-growth">${closestPoint.change} vs previous year</div>
+      <div class="tooltip-growth">${closestPoint.change} vs. Vorjahr</div>
       <div class="tooltip-year">${closestPoint.year}</div>
     `;
 
@@ -2108,7 +2108,7 @@ canvas.addEventListener('mousemove', (e) => {
         Views
       </div>
       <div class="tooltip-value">${closestPoint.value.toLocaleString()} views</div>
-      <div class="tooltip-growth">${closestPoint.change} vs previous year</div>
+      <div class="tooltip-growth">${closestPoint.change} vs. Vorjahr</div>
       <div class="tooltip-year">${closestPoint.year}</div>
     `;
 
@@ -2343,7 +2343,7 @@ function drawChart(canvasId = 'growthChart', tooltipId = 'chartTooltip', chartDa
           ${closestPoint.dataset}
         </div>
         <div class="tooltip-value">${closestPoint.formattedValue}</div>
-        <div class="tooltip-growth">+${closestPoint.growth}% vs previous year</div>
+        <div class="tooltip-growth">+${closestPoint.growth}% vs. Vorjahr</div>
         <div class="tooltip-year">${closestPoint.year}</div>
       `;
       
