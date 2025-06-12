@@ -1218,7 +1218,7 @@ const observer = new IntersectionObserver((entries) => {
 
 // Pie Chart Data
 const pieData = {
-  labels: ['Self-Built', 'Supported'],
+  labels: ['Selbst', 'Unterstützt'],
   data: [99, 1],
   colors: ['#323131', '#880423']
 };
@@ -1876,7 +1876,7 @@ function drawEfficiencyChart(canvasId = 'efficiencyChart', tooltipId = 'efficien
       tooltip.innerHTML = `
         <div class="tooltip-platform" style="color: ${efficiencyData.color};">
           <div class="tooltip-circle" style="background-color: ${efficiencyData.color};"></div>
-          Hours per Week
+          Stunden pro Woche
         </div>
         <div class="tooltip-value">${closestPoint.value}h</div>
         <div class="tooltip-growth">${closestPoint.change} vs. Vorjahr</div>
