@@ -5,6 +5,31 @@
   <title>Red Bow Music – Projekt</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
+    
+    /* Three column image gallery */
+    .image-gallery {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      width: 100%;
+      max-width: 800px;
+      margin: 2rem 0;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.8s ease;
+    }
+    
+    .gallery-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 12px;
+      transition: transform 0.3s ease;
+    }
+    
+    .gallery-image:hover {
+      transform: scale(1.05);
+    }
     body {
       background: #111;
       color: #fff;
@@ -136,7 +161,11 @@
     <img src="https://github.com/sebastianbench/Portfolio/blob/main/images/Iphone%20RBM%2004.jpg?raw=true" alt="Red Bow Music 3" class="gallery-image">
   </div>
   
-  <img src="https://github.com/sebastianbench/Portfolio/blob/main/images/Back%20image%203.jpg?raw=true" alt="Full Width" class="detail-footer-image reveal-element">
+  <div class="image-gallery reveal-element">
+    <img src="https://github.com/sebastianbench/Portfolio/blob/main/images/Iphone%20RBM%2004.jpg?raw=true" alt="Red Bow Music 4" class="gallery-image">
+    <img src="https://github.com/sebastianbench/Portfolio/blob/main/images/Iphone%20RBM%2004.jpg?raw=true" alt="Red Bow Music 5" class="gallery-image">
+    <img src="https://github.com/sebastianbench/Portfolio/blob/main/images/Iphone%20RBM%2004.jpg?raw=true" alt="Red Bow Music 6" class="gallery-image">
+  </div>
 
   <script>
     // Scroll reveal functionality
