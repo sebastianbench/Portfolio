@@ -24,33 +24,109 @@
       cursor: pointer;
       font-weight: 600;
       margin-bottom: 1rem;
+      transition: color 0.3s ease;
+    }
+    .back-button:hover {
+      color: #ff6b6b;
     }
     .detail-image {
       width: 100%;
-      max-width: 1200px;
+      max-width: 600px; /* Reduced from 1200px to make it smaller */
       border-radius: 20px;
       margin-bottom: 2rem;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.8s ease;
     }
     .detail-text {
       max-width: 800px;
       font-size: 18px;
       line-height: 1.7;
       margin-bottom: 2rem;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.8s ease;
     }
     .detail-footer-image {
       width: 100%;
       margin-top: 2rem;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.8s ease;
+    }
+    
+    /* Reveal animation classes */
+    .reveal {
+      opacity: 1 !important;
+      transform: translateY(0) !important;
+    }
+    
+    /* Fade in animation for back button */
+    .back-button {
+      opacity: 0;
+      animation: fadeInDown 0.6s ease forwards;
+    }
+    
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    /* Mobile responsiveness */
+    @media (max-width: 768px) {
+      .detail-image {
+        max-width: 100%;
+      }
+      .detail-text {
+        font-size: 16px;
+      }
     }
   </style>
 </head>
 <body>
   <button class="back-button" onclick="window.location.href='index.html'">← Zurück</button>
-  <img src="https://github.com/sebastianbench/Portfolio/blob/main/images/Iphone%20RBM%2004.jpg?raw=true" alt="Red Bow Music Full Image" class="detail-image">
-  <div class="detail-text">
+  <img src="https://github.com/sebastianbench/Portfolio/blob/main/images/Iphone%20RBM%2004.jpg?raw=true" alt="Red Bow Music Full Image" class="detail-image reveal-element">
+  <div class="detail-text reveal-element">
     <p>
-      Hier kannst du die Vision hinter Red Bow Music beschreiben – z. B. wie du dein Produkt entwickelt, deine Zielgruppe aufgebaut und über Plattformen wie Shopify, Instagram und Payhip vermarktet hast.
+      Hier kannst du die Vision hinter Red Bow Music beschreiben – z. B. wie du dein Produkt entwickelt, deine Zielgruppe aufgebaut und über Plattformen wie Shopify, Instagram und Payhip vermarktet hast.
     </p>
   </div>
-  <img src="https://github.com/sebastianbench/Portfolio/blob/main/images/Back%20image%203.jpg?raw=true" alt="Full Width" class="detail-footer-image">
+  <img src="https://github.com/sebastianbench/Portfolio/blob/main/images/Back%20image%203.jpg?raw=true" alt="Full Width" class="detail-footer-image reveal-element">
+
+  <script>
+    // Scroll reveal functionality
+    function revealElements() {
+      const elements = document.querySelectorAll('.reveal-element');
+      const windowHeight = window.innerHeight;
+      
+      elements.forEach(element => {
+        const elementTop = element.getBoundingClientRect().top;
+        const revealPoint = 100; // Pixels from top of viewport to trigger reveal
+        
+        if (elementTop < windowHeight - revealPoint) {
+          element.classList.add('reveal');
+        }
+      });
+    }
+    
+    // Initial check on page load
+    window.addEventListener('load', () => {
+      revealElements();
+    });
+    
+    // Check on scroll
+    window.addEventListener('scroll', revealElements);
+    
+    // Reveal elements immediately if they're already in view
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(revealElements, 100);
+    });
+  </script>
 </body>
 </html>
