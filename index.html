@@ -1450,47 +1450,49 @@ function drawRevenueChart(canvasId = 'revenueChart', tooltipId = 'revenueTooltip
       let leftPos = relativeX - 15;
       let topPos = relativeY - 140;
       
-      // Keep tooltip within chart container bounds
-      if (leftPos + tooltipWidth > containerRect.width) {
-        leftPos = containerRect.width - tooltipWidth - 10;
-      }
-      if (leftPos < 10) {
-        leftPos = 10;
-      }
-      
-      if (topPos < 10) {
-        topPos = relativeY + 20;
-      }
-      if (topPos + tooltipHeight > containerRect.height) {
-        topPos = containerRect.height - tooltipHeight - 10;
-      }
-      
-      tooltip.style.display = 'block';
-      tooltip.style.left = leftPos + 'px';
-      tooltip.style.top = topPos + 'px';
-      tooltip.innerHTML = `
-        <div class="tooltip-platform" style="color: ${hoveredBar.color};">
-          <div class="tooltip-circle" style="background-color: ${hoveredBar.color};"></div>
-          Umsatz
-        </div>
-        <div class="tooltip-value">${hoveredBar.formattedValue}</div>
-        <div class="tooltip-growth">+${hoveredBar.growth}% vs. Vorjahr</div>
-        <div class="tooltip-year">${hoveredBar.year}</div>
-      `;
-      
-      const timeoutKey = `${canvasId}TooltipTimeout`;
-      if (window[timeoutKey]) {
-        clearTimeout(window[timeoutKey]);
-      }
-    } else {
-      const timeoutKey = `${canvasId}TooltipTimeout`;
-      if (window[timeoutKey]) {
-        clearTimeout(window[timeoutKey]);
-      }
-      window[timeoutKey] = setTimeout(() => {
-        tooltip.style.display = 'none';
-      }, 300);
-    }
+    // Keep tooltip within chart container bounds
+  if (leftPos + tooltipWidth > containerRect.width) {
+    leftPos = containerRect.width - tooltipWidth - 10;
+  }
+  if (leftPos < 10) {
+    leftPos = 10;
+  }
+
+  if (topPos < 10) {
+    topPos = relativeY + 20;
+  }
+  if (topPos + tooltipHeight > containerRect.height) {
+    topPos = containerRect.height - tooltipHeight - 10;
+  }
+
+  const chartLabel = (canvasId === 'revenueChart2') ? 'Öffnungsrate' : 'Umsatz';
+
+  tooltip.style.display = 'block';
+  tooltip.style.left = leftPos + 'px';
+  tooltip.style.top = topPos + 'px';
+  tooltip.innerHTML = `
+    <div class="tooltip-platform" style="color: ${hoveredBar.color};">
+      <div class="tooltip-circle" style="background-color: ${hoveredBar.color};"></div>
+      ${chartLabel}
+    </div>
+    <div class="tooltip-value">${hoveredBar.formattedValue}</div>
+    <div class="tooltip-growth">+${hoveredBar.growth}% vs. Vorjahr</div>
+    <div class="tooltip-year">${hoveredBar.year}</div>
+  `;
+
+  const timeoutKey = `${canvasId}TooltipTimeout`;
+  if (window[timeoutKey]) {
+    clearTimeout(window[timeoutKey]);
+  }
+} else {
+  const timeoutKey = `${canvasId}TooltipTimeout`;
+  if (window[timeoutKey]) {
+    clearTimeout(window[timeoutKey]);
+  }
+  window[timeoutKey] = setTimeout(() => {
+    tooltip.style.display = 'none';
+  }, 300);
+}
   });
   
   canvas.addEventListener('mouseleave', () => {
