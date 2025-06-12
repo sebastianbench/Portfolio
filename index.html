@@ -836,6 +836,53 @@ body {
     summary::-webkit-details-marker {
   display: none;
 }
+
+    .detail-section {
+  background: #111;
+  color: #fff;
+  padding: 2rem 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+}
+
+.detail-section.active {
+  display: flex;
+}
+
+.detail-image {
+  width: 100%;
+  border-radius: 20px;
+  margin-bottom: 2rem;
+}
+
+.detail-text {
+  font-family: 'Manrope', sans-serif;
+  font-size: 18px;
+  line-height: 1.7;
+  margin-bottom: 2rem;
+  max-width: 800px;
+  text-align: left;
+}
+
+.detail-footer-image {
+  width: 100%;
+  margin-top: 2rem;
+}
+
+.back-button {
+  align-self: flex-start;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
     
   </style>
 </head>
@@ -878,12 +925,8 @@ body {
       <li>40.000 € Umsatzprognose für 2025</li>
       <li>1.000+ Bestellungen in den letzten 12 Monaten</li>
     </ul>
-<details class="reference-toggle">
-  <summary>See description</summary>
-  <div class="reference-text">
-    This is a reference letter or endorsement specific to redbow. You can paste or write the actual reference content here, like a quote from a manager or a summary of achievements during your time there.
-  </div>
-</details>
+<a href="#detail-redbow" class="custom-button grey">Mehr erfahren</a>
+
 
 
 
@@ -892,6 +935,17 @@ body {
     <img src="https://github.com/sebastianbench/Portfolio/blob/main/images/Iphone%20RBM%2004.jpg?raw=true"
          alt="Phone Preview">
   </div>
+
+<!-- Detail section for Red Bow Music -->
+<section id="detail-redbow" class="detail-section">
+  <button class="back-button" onclick="window.location.hash = ''; scrollToTop()">← Zurück</button>
+  <img src="https://github.com/sebastianbench/Portfolio/blob/main/images/Iphone%20RBM%2004.jpg?raw=true" alt="Red Bow Music Full Image" class="detail-image" />
+  <div class="detail-text">
+    <p>
+      Hier kannst du mehr über Red Bow Music schreiben: deine Vision, wie du das Geschäft aufgebaut hast, was du automatisiert hast, und welche Plattformen und Strategien du für Reichweite und Umsatz genutzt hast.
+    </p>
+  </div>
+  <img src="https://github.com/sebastianbench/Portfolio/blob/main/images/Back%20image%203.jpg?raw=true" alt="Full Width" class="detail-footer-image" />
 </section>
     </div>
 
@@ -966,47 +1020,8 @@ body {
       <li>Manuelle Arbeit durch Automatisierung um 50 % reduziert</li>
       <li>Projektmanagement-Support beim eBay Werkstattservice-Launch</li>
   </ul>
-<details class="reference-toggle">
-  <summary>See reference</summary>
-  <div class="reference-text">
-    Zeugnis repareo GmbH<br><br>
+<a href="#detail-repareo" class="custom-button grey">Mehr erfahren</a>
 
-    repareo GmbH<br>
-    Prinzenstraße 12<br>
-    80639 München<br><br>
-
-    Herr Sebastian Echavarria, geboren am 07.01.2000 in La Paz, Bolivien, war vom 1. Juni 2023 bis zum 31. März 2025 als Werkstudent im Bereich Marketing bei der repareo GmbH tätig.<br><br>
-
-    repareo GmbH ist ein Unternehmen der Automobilbranche mit rund 20 Mitarbeitern und Sitz in München. Als Online-Plattform für Autowerkstätten bietet sie B2B- und B2C-Dienstleistungen an, darunter die Buchung von Werkstattterminen, transparente Preisangebote für Kfz-Dienstleistungen, Fahrzeugbewertungen sowie die Vernetzung mit Autoankaufpartnern.<br><br>
-
-    Als verantwortlicher Mitarbeiter im Bereich CRM war Herr Echavarria der alleinige Ansprechpartner für die Konzeption, Implementierung und Optimierung des CRM-Prozesses. Im Fokus lagen dabei folgende Aufgabenbereiche, die Herr Echavarria hochmotiviert übernahm:<br><br>
-
-    • Konzeption, Gestaltung und Produktion von Marketingmaterialien für Partnerschaften sowie Eventankündigungen für interne und externe Kommunikation.<br>
-    • Strukturierung, Gestaltung und Texterstellung von Newslettern für B2B- und B2C-Kunden.<br>
-    • Entwicklung und Implementierung automatisierter E-Mail-Kampagnen, darunter langfristig nutzbare E-Mail-Sequenzen sowie kampagnenspezifische E-Mail-Abläufe.<br>
-    • Wöchentliche und monatliche Berichterstattung zu Marketingmaßnahmen zur Erfolgsmessung und Optimierung der Kampagnen-Performance.<br>
-    • Optimierung von SEO-Maßnahmen sowie Pflege von Landing Pages zur Steigerung der Online-Sichtbarkeit und Conversion-Raten.<br><br>
-
-    Wir haben Herrn Echavarria als einen hochmotivierten Mitarbeiter kennengelernt, der stets durch eine herausragende Arbeitsbereitschaft, ein hohes Maß an Ressourcenbewusstsein und Eigeninitiative überzeugte. Sein fundiertes Fachwissen in den Bereichen Marketing, CRM und Design setzte er zielgerichtet ein und erweiterte es kontinuierlich.<br><br>
-
-    Als verantwortlicher Mitarbeiter im Bereich CRM entwickelte und implementierte Herr Echavarria Kampagnen sowie Automatisierungen, die maßgeblich zur Steigerung der Kundenbindung beitrugen.<br><br>
-
-    Durch seine stets effiziente Umsetzung der Marketingmaßnahmen meldeten sich rund 120 neue Geschäftskunden für unsere Dienstleistungen an. Im Endkundenbereich konnte er dazu beitragen rund 4.800 Abschlüsse zu generieren.<br><br>
-
-    Herr Echavarria wurde von Vorgesetzten und Kollegen gleichermaßen geschätzt. Sein Verhalten gegenüber Kollegen und Vorgesetzten war jederzeit vorbildlich und von hoher Professionalität geprägt.<br><br>
-
-    Zu unserem Bedauern verlässt Herr Echavarria die repareo GmbH auf eigenen Wunsch. Wir bedanken uns für seine herausragende Leistung in unserem Unternehmen. Für seine Zukunft wünschen wir ihm beruflich weiterhin viel Erfolg und persönlich alles Gute.<br><br>
-
-    München, 31. März 2025<br>
-    Cornelius Siegfried Hager, CPO<br><br>
-
-    repareo GmbH<br>
-    Prinzenstraße 12<br>
-    80639 München<br><br>
-
-    Geschäftsführer: Philipp Haac
-  </div>
-</details>
 
 
 
@@ -1015,6 +1030,19 @@ body {
     <img src="https://github.com/sebastianbench/Portfolio/blob/main/images/Images 06.jpg?raw=true"
          alt="Second Project Preview">
   </div>
+
+<!-- Detail section for Repareo -->
+<section id="detail-repareo" class="detail-section">
+  <button class="back-button" onclick="window.location.hash = ''; scrollToTop()">← Zurück</button>
+  <img src="https://github.com/sebastianbench/Portfolio/blob/main/images/Images%2006.jpg?raw=true" alt="Repareo Full Image" class="detail-image" />
+  <div class="detail-text">
+    <p>
+      Hier kannst du die ausführliche Beschreibung deiner Aufgaben bei Repareo einfügen – z. B. wie du CRM-Automatisierung aufgebaut hast, welche Tools du verwendet hast und welchen messbaren Impact du erzielen konntest.
+    </p>
+  </div>
+  <img src="https://github.com/sebastianbench/Portfolio/blob/main/images/Back%20image%203.jpg?raw=true" alt="Full Width" class="detail-footer-image" />
+
+    
 </section>
 </div>
 
@@ -1094,37 +1122,8 @@ body {
       <li>Content-Strategie für Instagram & TikTok mit Fokus auf Engagement</li>
       <li>Automatisierte E-Mail-Flows zur Bindung & Umsatzsteigerung</li>
     </ul>
-<details class="reference-toggle">
-  <summary>See reference</summary>
-  <div class="reference-text">
-    Hinweis: Dieses Praktikumszeugnis bezieht sich ausschließlich auf die sechs Monate, in denen ich während meines Studiums als Vollzeitpraktikant tätig war. Die Zeit als Werkstudent ist nicht enthalten.<br><br>
+<a href="#detail-everjump" class="custom-button grey">Mehr erfahren</a>
 
-    Praktikumszeugnis<br><br>
-
-    Sebastian Echavarria, geboren am 07.01.2000 in La Paz Bolivien, war von 01. September 2022 bis 28. Februar 2022 als Praktikant im Bereich Marketing bei unserer Firma tätig. Insbesondere hat er sich in einem kleinen Team um E-Mail Marketing und Social Media gekümmert.<br><br>
-
-    Die Pala Health GmbH ist mit der Marke EVERJUMP seit dem 01.12.2020 am Markt und vertreibt ein innovatives Springseil-System in Kombination mit einer mobilen App. Das Unternehmen beschäftigt zur Zeit sechs Mitarbeiter.<br><br>
-
-    Während seines Pflichtpraktikums lernte Herr Echavarria den Bereich Marketing sehr gut kennen. Zu den regelmäßigen Aufgaben von Herrn Echavarria gehörten:<br><br>
-
-    - Gesamtverantwortung für das E-Mail-Marketing durch Planung, Design und Umsetzung aller E-Mail Aktivitäten<br>
-    - Recherche und Ausarbeitung von Content Plänen der Social-Media-Inhalte für Plattformen wie YouTube, TikTok und Instagram.<br>
-    - Planung, Erstellung und Bearbeitung der Beiträge für die Social-Media-Kanäle<br>
-    - Analyse und Präsentation der wichtigsten Zahlen (KPIs) zum E-Mail-Marketing und zu den sozialen Medien auf wöchentlicher und monatlicher Basis.<br><br>
-
-    Herr Echavarria hat sich innerhalb kürzester Zeit sehr gut in unser Team integriert. Er war ein geschätzter, beliebter Mitarbeiter. Mit seinen wertvollen und innovativen Ideen bereicherte er das Unternehmen ab dem ersten Tag. Vor allem mit seinem Engagement für den Aufbau unseres Tik-Tok-Profils hat er unsere Erwartungen weit übertroffen. Er hat sich vorbildlich in das Team eingefügt und war von Tag eins ein überaus verlässlicher Teil unserer Organisation.<br><br>
-
-    Herr Echavarria hat die ihm übertragenen Aufgaben stets zu unserer vollsten Zufriedenheit ausgeübt.<br><br>
-
-    Wir danken Herrn Echavarria für seinen außerordentlichen Einsatz und wünschen ihm auf seinem weiteren beruflichen Weg weiterhin viel Erfolg und alles Gute. Bei Rückfragen zu Herr Echavarria können Sie mich jederzeit als Referenz kontaktieren.<br><br>
-
-    Berlin, 24.04.2023<br>
-    Moritz Lienert<br><br>
-    Geschäftsführer<br>
-    Pala Health GmbH<br>
-    Friedrichstraße 114A, 10117 Berlin
-  </div>
-</details>
 
 
 
@@ -1203,6 +1202,18 @@ body {
 
 </section>
 
+<!-- Detail section for Everjump -->
+<section id="detail-everjump" class="detail-section">
+  <button class="back-button" onclick="window.location.hash = ''; scrollToTop()">← Zurück</button>
+  <img src="https://github.com/sebastianbench/Portfolio/blob/main/images/Ejerjump%20new%20capture%200911.jpg?raw=true" alt="Everjump Full Image" class="detail-image" />
+  <div class="detail-text">
+    <p>
+      Hier kannst du die ausführliche Beschreibung deiner Aufgaben und Erfolge bei Everjump einfügen. Nutze diesen Platz für Highlights, Ergebnisse oder reflektierte Learnings.
+    </p>
+  </div>
+  <img src="https://github.com/sebastianbench/Portfolio/blob/main/images/Back%20image%203.jpg?raw=true" alt="Full Width" class="detail-footer-image" />
+</section>
+  
 <script>
 // Scroll animation observer
 const observerOptions = {
